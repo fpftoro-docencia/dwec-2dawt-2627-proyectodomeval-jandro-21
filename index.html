@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión · BeatFest Manager</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body>
+    <!-- Cabecera pública -->
+    <header class="navbar navbar-beatfest py-3">
+      <div class="container d-flex justify-content-between align-items-center">
+        <a class="brand-container" href="index.html" aria-label="Inicio BeatFest Manager">
+          <svg
+            class="brand-icon"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          <span class="brand-text">Beat<span>Fest</span></span>
+        </a>
+        <div>
+          <a href="registro.html" class="btn-edgy-outline">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
+            Crear cuenta
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Zona accesible de avisos -->
+    <div class="container mt-4">
+      <div id="zona-avisos" role="status" aria-live="polite"></div>
+    </div>
+
+    <main class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-7 col-lg-5">
+          <div class="card-beatfest p-4 p-sm-5">
+            <div class="card-beatfest-header text-center">
+              <h1 class="h3 fw-bold mb-2 text-uppercase letter-spacing-1">Acceso Promotor</h1>
+              <p class="text-secondary small mb-0">Control de carteles, escenarios y artistas</p>
+            </div>
+
+            <form id="form-login" novalidate>
+              <div class="mb-4">
+                <label for="login-nombre" class="form-label">Nombre de usuario</label>
+                <input
+                  type="text"
+                  class="form-control form-control-beatfest"
+                  id="login-nombre"
+                  name="nombre"
+                  placeholder="ej. promotora_underground"
+                  autocomplete="username"
+                  aria-describedby="error-login-nombre"
+                  required
+                />
+                <div id="error-login-nombre" class="invalid-feedback"></div>
+              </div>
+
+              <div class="mb-4">
+                <label for="login-clave" class="form-label">Contraseña</label>
+                <input
+                  type="password"
+                  class="form-control form-control-beatfest"
+                  id="login-clave"
+                  name="clave"
+                  placeholder="Introduce tu clave secreta"
+                  autocomplete="current-password"
+                  aria-describedby="error-login-clave"
+                  required
+                />
+                <div id="error-login-clave" class="invalid-feedback"></div>
+              </div>
+
+              <button type="submit" id="btn-login-enviar" class="btn-edgy-primary w-100 py-3 mb-4">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  <polyline points="10 17 15 12 10 7" />
+                  <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Entrar al Festival
+              </button>
+
+              <div class="text-center pt-2 border-top border-secondary border-opacity-25">
+                <span class="text-secondary small">¿No tienes cuenta de promotor?</span>
+                <a
+                  href="registro.html"
+                  class="text-decoration-none fw-bold ms-1"
+                  style="color: var(--bf-acid-lime)"
+                >
+                  Regístrate aquí
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="text-center py-4 mt-auto">
+      <div class="container">
+        <small class="text-muted">© 2026 BeatFest Manager · Alternative Festival Platform</small>
+      </div>
+    </footer>
+
+    <script type="module" src="js/paginas/login.js"></script>
+  </body>
+</html>
