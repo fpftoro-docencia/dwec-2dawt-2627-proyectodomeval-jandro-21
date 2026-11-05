@@ -1,38 +1,31 @@
 /* ==========================================================================
-   BeatFest Manager · Estilo Edgy / Hyperpop / Alternative Metal Festival
+   BeatFest Manager · Estilo Edgy / Raw Alternative Metal & Hyperpop
+   Diseño plano, de alto contraste, sin gradientes excesivos.
    ========================================================================== */
 
 :root {
-  /* Paleta base: Negro obsidiana puro y grafito industrial */
-  --bf-bg: #08080b;
-  --bf-card-bg: #101015;
-  --bf-card-hover: #15151c;
-  --bf-border: #23232f;
+  /* Paleta base: Negro puro y grafito industrial plano */
+  --bf-bg: #09090c;
+  --bf-card-bg: #121217;
+  --bf-card-hover: #17171e;
+  --bf-border: #262630;
   --bf-border-focus: #ff007f;
 
-  /* Acentos Hyperpop & Metal Alternativo */
+  /* Colores planos de alto impacto (sin gradientes) */
   --bf-acid-lime: #ccff00;
   --bf-electric-pink: #ff007f;
   --bf-cyber-cyan: #00f0ff;
-  --bf-ultraviolet: #9d00ff;
+  --bf-danger: #ff2a5f;
 
   /* Tipografía y textos de alta legibilidad */
-  --bf-text-primary: #fcfcfc;
+  --bf-text-primary: #ffffff;
   --bf-text-secondary: #a1a1aa;
   --bf-text-muted: #71717a;
-
-  /* Resplandores y sombras */
-  --bf-glow-pink: 0 0 15px rgba(255, 0, 127, 0.4);
-  --bf-glow-lime: 0 0 15px rgba(204, 255, 0, 0.35);
-  --bf-glow-cyan: 0 0 15px rgba(0, 240, 255, 0.35);
 }
 
 /* Base */
 body {
   background-color: var(--bf-bg);
-  background-image:
-    radial-gradient(ellipse at 80% 0%, rgba(157, 0, 255, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 100%, rgba(255, 0, 127, 0.08) 0%, transparent 45%);
   color: var(--bf-text-primary);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -51,9 +44,8 @@ main {
    Cabecera y Navegación
    ========================================================================== */
 .navbar-beatfest {
-  background-color: rgba(12, 12, 16, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--bf-border);
+  background-color: #0d0d12;
+  border-bottom: 2px solid var(--bf-border);
 }
 
 .brand-container {
@@ -64,10 +56,9 @@ main {
 }
 
 .brand-icon {
-  width: 2rem;
-  height: 2rem;
+  width: 1.85rem;
+  height: 1.85rem;
   color: var(--bf-acid-lime);
-  filter: drop-shadow(0 0 6px rgba(204, 255, 0, 0.6));
 }
 
 .brand-text {
@@ -80,55 +71,41 @@ main {
 
 .brand-text span {
   color: var(--bf-electric-pink);
-  text-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
 }
 
 .nav-link-edgy {
   color: var(--bf-text-secondary);
-  font-size: 0.925rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.5rem 0.85rem;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.85rem;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
 }
 
 .nav-link-edgy:hover {
   color: var(--bf-acid-lime);
+  border-color: var(--bf-acid-lime);
+  background-color: transparent;
 }
 
 .nav-link-edgy.active {
-  color: #000;
+  color: #000000;
   background-color: var(--bf-acid-lime);
-  box-shadow: var(--bf-glow-lime);
+  border-color: var(--bf-acid-lime);
 }
 
 /* ==========================================================================
-   Tarjetas e Interfaz Edgy
+   Tarjetas e Interfaz (Plana, nítida y brutalista)
    ========================================================================== */
 .card-beatfest {
   background-color: var(--bf-card-bg);
   border: 1px solid var(--bf-border);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  position: relative;
-  overflow: hidden;
-}
-
-.card-beatfest::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    var(--bf-electric-pink),
-    var(--bf-ultraviolet),
-    var(--bf-acid-lime)
-  );
+  border-top: 3px solid var(--bf-electric-pink);
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .card-beatfest-header {
@@ -138,12 +115,12 @@ main {
 }
 
 /* ==========================================================================
-   Formularios y Controles (Alto contraste y legibilidad)
+   Formularios y Controles (Alto contraste y máxima legibilidad)
    ========================================================================== */
 .form-label {
   font-weight: 700;
-  font-size: 0.875rem;
-  letter-spacing: 0.03em;
+  font-size: 0.825rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--bf-text-primary);
   margin-bottom: 0.4rem;
@@ -151,20 +128,21 @@ main {
 
 .form-control-beatfest,
 .form-select-beatfest {
-  background-color: #0b0b0f;
+  background-color: #08080b;
   border: 1px solid var(--bf-border);
-  border-radius: 6px;
+  border-radius: 4px;
   color: #ffffff;
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-control-beatfest:focus,
 .form-select-beatfest:focus {
-  background-color: #121218;
+  background-color: #0d0d12;
   border-color: var(--bf-electric-pink);
-  box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.25);
+  outline: none;
+  box-shadow: none;
   color: #ffffff;
 }
 
@@ -174,8 +152,7 @@ main {
 
 .form-control-beatfest.is-invalid,
 .form-select-beatfest.is-invalid {
-  border-color: #ff3366;
-  box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.25);
+  border-color: var(--bf-danger);
 }
 
 .invalid-feedback {
@@ -186,16 +163,16 @@ main {
 }
 
 .form-check-input {
-  background-color: #0b0b0f;
+  background-color: #08080b;
   border: 1px solid var(--bf-border);
   width: 1.25rem;
   height: 1.25rem;
+  border-radius: 3px;
 }
 
 .form-check-input:checked {
   background-color: var(--bf-electric-pink);
   border-color: var(--bf-electric-pink);
-  box-shadow: var(--bf-glow-pink);
 }
 
 .form-check-label {
@@ -204,54 +181,51 @@ main {
 }
 
 /* ==========================================================================
-   Botones con personalidad Hyperpop / Metal
+   Botones (Sólidos, planos, con gran impacto)
    ========================================================================== */
 .btn-edgy-primary {
-  background: linear-gradient(135deg, var(--bf-electric-pink), #e6005c);
+  background-color: var(--bf-electric-pink);
   color: #ffffff;
   font-weight: 800;
-  font-size: 0.925rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 0.75rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  border: 1px solid var(--bf-electric-pink);
+  border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
 }
 
 .btn-edgy-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff1a8c, #ff007f);
+  background-color: #e60072;
+  border-color: #e60072;
   color: #ffffff;
-  box-shadow: var(--bf-glow-pink);
-  transform: translateY(-1px);
 }
 
 .btn-edgy-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
 .btn-edgy-outline {
-  background: transparent;
+  background-color: transparent;
   color: var(--bf-text-primary);
   border: 1px solid var(--bf-border);
   font-weight: 700;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 0.45rem 1rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-edgy-outline:hover {
@@ -261,29 +235,28 @@ main {
 }
 
 .btn-edgy-danger {
-  background: transparent;
-  color: #ff3366;
-  border: 1px solid #ff3366;
+  background-color: transparent;
+  color: var(--bf-danger);
+  border: 1px solid var(--bf-danger);
   font-weight: 700;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 0.45rem 1rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-edgy-danger:hover {
-  background: #ff3366;
+  background-color: var(--bf-danger);
   color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 51, 102, 0.4);
 }
 
 /* ==========================================================================
-   Lista de Requisitos de Contraseña (con SVGs dinámicos)
+   Lista de Requisitos de Contraseña
    ========================================================================== */
 .requisitos-clave {
   list-style: none;
@@ -300,7 +273,7 @@ main {
   gap: 0.6rem;
   font-size: 0.85rem;
   color: var(--bf-text-muted);
-  transition: all 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .requisitos-clave li .svg-req {
@@ -309,7 +282,7 @@ main {
   flex-shrink: 0;
   stroke: var(--bf-text-muted);
   fill: none;
-  transition: all 0.2s ease;
+  transition: stroke 0.15s ease;
 }
 
 .requisitos-clave li.cumplido {
@@ -319,26 +292,24 @@ main {
 
 .requisitos-clave li.cumplido .svg-req {
   stroke: var(--bf-acid-lime);
-  filter: drop-shadow(0 0 4px rgba(204, 255, 0, 0.6));
 }
 
 /* ==========================================================================
    Badges de Roles
    ========================================================================== */
 .badge-admin {
-  background: var(--bf-acid-lime);
+  background-color: var(--bf-acid-lime);
   color: #000000;
   font-weight: 900;
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.35rem 0.65rem;
-  border-radius: 4px;
-  box-shadow: var(--bf-glow-lime);
+  border-radius: 3px;
 }
 
 .badge-usuario {
-  background: #1f1f28;
+  background-color: #1f1f28;
   color: var(--bf-text-primary);
   border: 1px solid var(--bf-border);
   font-weight: 800;
@@ -346,38 +317,41 @@ main {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.35rem 0.65rem;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 /* ==========================================================================
-   Avisos y Alertas
+   Avisos y Alertas Planas
    ========================================================================== */
 .alert-edgy {
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.925rem;
   padding: 0.9rem 1.25rem;
-  border: 1px solid transparent;
+  border-left: 4px solid;
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
 .alert-edgy-success {
-  background-color: rgba(204, 255, 0, 0.1);
-  border-color: var(--bf-acid-lime);
+  background-color: #141c10;
+  border: 1px solid #233615;
+  border-left: 4px solid var(--bf-acid-lime);
   color: var(--bf-acid-lime);
 }
 
 .alert-edgy-danger {
-  background-color: rgba(255, 0, 127, 0.12);
-  border-color: var(--bf-electric-pink);
-  color: #ff4d94;
+  background-color: #201116;
+  border: 1px solid #3d1722;
+  border-left: 4px solid var(--bf-electric-pink);
+  color: #ff6699;
 }
 
 .alert-edgy-info {
-  background-color: rgba(0, 240, 255, 0.1);
-  border-color: var(--bf-cyber-cyan);
+  background-color: #0d1a20;
+  border: 1px solid #16313d;
+  border-left: 4px solid var(--bf-cyber-cyan);
   color: var(--bf-cyber-cyan);
 }
 
