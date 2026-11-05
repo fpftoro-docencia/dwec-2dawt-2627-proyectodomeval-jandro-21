@@ -1,42 +1,48 @@
-# Nombre de tu aplicación
+# BeatFest Manager · Organizador de Festivales y Escenarios
 
 <!-- Sprint 2: la insignia de tu workflow, con tu organización y tu repositorio. -->
 ![Integración continua](https://github.com/<organización>/<repositorio>/actions/workflows/ci.yml/badge.svg)
 
-<!-- Completa cada sección a medida que avanzas en los sprints. Borra los comentarios como este
-     cuando termines. Este README es también la portada de la documentación que genera `npm run docs`.
-     No cambies los títulos de las secciones (##): la corrección los busca por su nombre. -->
-
 ## Mi proyecto
 
-<!-- Sprint 1. De qué es tu aplicación y para quién, en dos o tres frases. -->
+**BeatFest Manager** es una aplicación web para directores artísticos, promotores y coordinadores de festivales musicales que permite diseñar, organizar y gestionar carteles de eventos (*lineups*), escenarios y jornadas de conciertos. Cuenta con una mecánica interactiva de **Drag & Drop** para asignar y reorganizar artistas entre escenarios y horarios, control de accesos VIP y patrocinadores.
 
 **Web publicada:** <!-- https://<proyecto>.vercel.app -->
 
-### La entidad
-
-<!-- Sprint 2 (puedes adelantarla en el sprint 1). Una fila por campo, con los mínimos del requisito 13:
-     marca el campo condicional y el grupo dinámico (con su mínimo y su máximo). -->
+### La entidad: Jornada de Festival
 
 | Campo | Control | Obligatorio | Regla de validación | Mensaje si no se cumple |
 |-------|---------|:-----------:|---------------------|-------------------------|
-| | | | | |
+| `nombreJornada` | Texto (`<input type="text">`) | Sí | Entre 4 y 40 caracteres alfanuméricos | El nombre debe tener entre 4 y 40 caracteres |
+| `fechaEvento` | Fecha (`<input type="date">`) | Sí | Fecha igual o posterior a la actual | La fecha no puede ser anterior a hoy |
+| `generoMusical` | Desplegable (`<select>`) | Sí | Debe seleccionar una opción válida | Selecciona un género musical principal |
+| `aforoMaximo` | Número (`<input type="number">`) | Sí | Entre 50 y 100.000 asistentes | El aforo debe estar entre 50 y 100.000 personas |
+| `tipoAcceso` | Botones de opción (`<input type="radio">`) | Sí | Selección obligatoria (General, VIP Backstage o Barra Libre) | Debes seleccionar un tipo de acceso |
+| `suplementoVip` *(campo condicional)* | Número (`<input type="number">`) | Sí (si VIP) | Número positivo mayor o igual a 0 | El suplemento VIP debe ser un importe válido |
+| `patrocinadores` *(grupo dinámico, mín 0, máx 3)* | Texto (`<input type="text">`) | No | Entre 2 y 30 caracteres por patrocinador | El nombre del patrocinador debe tener entre 2 y 30 caracteres |
+| `codigoLicencia` | Texto (`<input type="text">`) | Sí | Expresión regular: `^FEST-\d{4}-[A-Z0-9]{4}$` | Formato requerido: FEST-AAAA-XXXX |
+| `telefonoContacto` | Teléfono (`<input type="tel">`) | Sí | Expresión regular española: `^[67]\d{8}$` | Debe ser un teléfono móvil español válido (9 dígitos) |
+| `cifPromotora` | Texto (`<input type="text">`) | Sí | Formato CIF/DNI y validación algorítmica de control | El identificador de la promotora no es válido |
 
 ### El registro de usuarios
 
 | Campo | Control | Regla | Mensaje |
 |-------|---------|-------|---------|
-| | | | |
+| `nombreUsuario` | Texto (`<input type="text">`) | Entre 3 y 20 caracteres alfanuméricos (`^[a-zA-Z0-9_-]{3,20}$`) y no ocupado | Debe tener entre 3 y 20 caracteres (solo letras, números y guiones) y estar libre |
+| `correo` | Correo (`<input type="email">`) | Formato de correo electrónico estándar | Introduce un correo electrónico válido |
+| `clave` | Contraseña (`<input type="password">`) | Mínimo 8 caracteres, al menos una mayúscula (`\p{Lu}`), una minúscula (`\p{Ll}`) y un número (`\d`) | La contraseña debe cumplir los requisitos de seguridad |
+| `repetirClave` | Contraseña (`<input type="password">`) | Debe coincidir exactamente con `clave` | Las contraseñas no coinciden |
+| `aceptarTerminos` | Casilla (`<input type="checkbox">`) | Casilla marcada obligatoriamente | Debes aceptar los términos y condiciones del festival |
 
 ### Páginas
 
 | Página | Acceso | Qué hace |
 |--------|--------|----------|
-| `index.html` | Pública | |
-| `registro.html` | Pública | |
-| `listado.html` | Usuarios | |
-| `ficha.html` | Usuarios | |
-| `usuarios.html` | Administradores | |
+| `index.html` | Pública | Inicio de sesión con usuario y contraseña (redirige al listado si ya hay sesión activa). |
+| `registro.html` | Pública | Registro de nuevos promotores/usuarios con validación en tiempo real y requisitos visuales. El primer usuario registrado es Administrador. |
+| `listado.html` | Privada (Usuarios y Admins) | Catálogo de jornadas de festivales con buscador *debounce*, paginación, edición y borrado con confirmación en `<dialog>`. |
+| `ficha.html` | Privada (Usuarios y Admins) | Alta y edición de jornadas con campo condicional, grupo dinámico de patrocinadores y tablero drag & drop. |
+| `usuarios.html` | Privada (Solo Administradores) | Listado y gestión de usuarios registrados para asignar/revocar el rol de administrador, con protección contra auto-bloqueo. |
 
 ## Arquitectura y módulos
 
@@ -57,11 +63,11 @@
 ## Almacenamiento y sesión
 
 <!-- 1. Tabla con cada clave que usas: dónde está (localStorage o sessionStorage), qué guarda y un
-        ejemplo de su contenido.
+         ejemplo de su contenido.
      2. Por qué cada dato va donde va.
      3. Cómo guardas el rol y cómo proteges las páginas por sesión y por rol.
      4. Por qué este inicio de sesión NO es seguro: qué podría hacer alguien con las DevTools y cómo
-        se hace en una aplicación real. -->
+         se hace en una aplicación real. -->
 
 ## Funcionalidad y formularios
 
@@ -92,7 +98,7 @@
 ### Propagación
 
 <!-- 1. Tabla con TODOS tus oyentes: evento, dónde lo registras, en qué fase actúa
-        (captura, objetivo o burbuja) y para qué.
+         (captura, objetivo o burbuja) y para qué.
      2. Dónde usas la delegación y qué ganas con ella.
      3. Tu uso de la captura y por qué no servía la burbuja.
      4. Si usas stopPropagation, por qué. -->
@@ -112,9 +118,23 @@
 
 ### ESLint y Prettier
 
-<!-- Sprint 1. Las reglas que has añadido a eslint.config.js (al menos tres): qué comprueba cada una
-     y por qué la quieres. Pega la salida de `npm run lint` y de `npm run format:check`. Cuenta un
-     problema real que encontraras con el depurador de las DevTools y cómo lo resolviste. -->
+En `eslint.config.js` se han añadido las siguientes reglas adicionales que no venían por defecto en la plantilla:
+
+1. **`curly: ['error', 'all']`**:
+   - *Qué comprueba:* Exige que todas las sentencias de control (`if`, `else`, `for`, `while`) lleven obligatoriamente llaves `{}` que delimiten su cuerpo, incluso si constan de una sola instrucción.
+   - *Por qué la queremos:* Previene fallos clásicos de ejecución por indentación engañosa (como el célebre fallo *goto fail* de SSL) y garantiza claridad absoluta al añadir nuevas líneas de código en bloques de control.
+
+2. **`camelcase: ['error', { properties: 'never' }]`**:
+   - *Qué comprueba:* Obliga a que los nombres de variables, parámetros y funciones sigan la convención estándar camelCase de JavaScript.
+   - *Por qué la queremos:* Mantiene una homogeneidad total en la base de código, diferenciando claramente variables y funciones de clases (`PascalCase`) y constantes globales (`SCREAMING_SNAKE_CASE`).
+
+3. **`'prefer-template': 'error'`**:
+   - *Qué comprueba:* Reclama el uso de plantillas de cadena (*template literals* con backticks y `${}`) en lugar de concatenaciones mediante el operador `+`.
+   - *Por qué la queremos:* Mejora significativamente la legibilidad del código al incrustar expresiones y variables, reduciendo errores con espacios y conversiones accidentales.
+
+4. **`'no-alert': 'error'`**:
+   - *Qué comprueba:* Prohíbe terminantemente el uso de funciones emergentes síncronas del navegador (`alert`, `confirm`, `prompt`).
+   - *Por qué la queremos:* Garantiza que toda la interacción con el usuario sea accesible, moderna y no bloquee el hilo principal del navegador, utilizando nuestro sistema de avisos propio en el DOM y ventanas modales accesibles con `<dialog>`.
 
 ### El workflow
 
@@ -132,10 +152,10 @@
 ## Despliegue continuo
 
 <!-- Sprint 3. 1. Cómo has configurado Vercel: build, carpeta de salida, protección de los
-        despliegues y Deployment Checks (qué comprobaciones exige y por qué).
+     despliegues y Deployment Checks (qué comprobaciones exige y por qué).
      2. Qué hacen despliegue.yml y release.yml, y qué comprueba tu prueba de humo.
      3. El camino de un cambio, con tus palabras: desde tu git push en una rama hasta que se ve en
-        la web, qué se comprueba en cada paso y qué pasa si algo falla. -->
+     la web, qué se comprueba en cada paso y qué pasa si algo falla. -->
 
 **Web publicada:** <!-- https://<proyecto>.vercel.app -->
 
@@ -150,36 +170,44 @@
 
 ## Organización del trabajo
 
-### Definición de Hecho
+### Definición de Hecho (Definition of Done)
 
-<!-- Sprint 1. Tu lista de condiciones para dar una tarea por terminada. Cada una tiene que poder
-     comprobarse. Si la cambias en algún sprint, di qué cambiaste y por qué. -->
+Para considerar una tarea o funcionalidad completada e integrada, debe satisfacer rigurosamente cada uno de los siguientes puntos:
 
-- [ ] <!-- … -->
+- [ ] **Calidad de código:** El código no utiliza variables globales, emplea `const` y `let`, comparaciones estrictas (`===`), no contiene `innerHTML` para renderizar datos dinámicos y pasa `npm run lint` sin advertencias ni errores.
+- [ ] **Formato unificado:** El código y los archivos de configuración siguen las reglas de estilo y pasan `npm run format:check`.
+- [ ] **Pruebas automatizadas:** Dispone de sus tests correspondientes (unitarios, integración o E2E según el nivel de la pirámide) y todos los tests pasan con `npm test`.
+- [ ] **Cobertura verificada:** Las funciones puras y validadores cumplen o superan el umbral mínimo del 90% medido con `npm run coverage`.
+- [ ] **Accesibilidad y UX:** Los campos y botones disponen de sus etiquetas `label`, `aria-describedby`, estados `aria-invalid` y roles correspondientes, y los formularios tienen foco automático en el primer error en caso de fallo.
+- [ ] **Prueba manual en navegador:** Funciona correctamente en el Dev Container en ventana privada de incógnito (almacenamiento limpio).
+- [ ] **Control de versiones:** Los cambios se realizan en su rama correspondiente (`feature branch`), con commits pequeños y descriptivos, y la integración en `main` se realiza mediante *Pull Request* con el workflow de CI en verde.
 
 ### Sprints
 
-<!-- Una fila por sprint. La reflexión: qué salió bien, qué no, qué cambias para el siguiente
-     (cuatro o cinco líneas, sobre tu trabajo y no sobre el enunciado). -->
-
 | Sprint | *Tag* | Qué incluye | Reflexión |
 |--------|-------|-------------|-----------|
-| 1 | `v0.1` | | |
-| 2 | `v0.2` | | |
-| 3 | `v1.0` | | |
+| 1 | `v0.1` | Gestión de usuarios, sesión, roles, validaciones de registro, sistema de avisos y primera integración continua con ESLint y tests unitarios. | |
+| 2 | `v0.2` | CRUD completo de festivales, drag & drop de artistas, buscador con debounce, paginación, panel de administración y CI completo con E2E y cobertura. | |
+| 3 | `v1.0` | Despliegue continuo en Vercel, vistas previas probadas, prueba de humo, release en GitHub y documentación JSDoc completa. | |
 
 **Tablero de Trello:** <!-- enlace (compartido con el profesor) -->
 
-**Blog del proyecto:** [blog/README.md](blog/README.md) <!-- dificultades y problemas conceptuales de cada sprint -->
+**Blog del proyecto:** [blog/README.md](blog/README.md)
 
 ### Ramas y versiones
 
-<!-- 1. Tabla con tus ramas: nombre, qué funcionalidad y enlace a su pull request.
-     2. Si integras con merge o con rebase, y por qué.
-     3. Qué deja fuera tu .gitignore y por qué. -->
+Se utilizará una estrategia de ramas por funcionalidad (*feature branches*). Para incorporar los cambios a `main` se utilizará **`merge`** (creando commit de fusión sin avance rápido / merge commit), ya que preserva el historial cronológico exacto de desarrollo y permite identificar con claridad en el grafo de Git cuándo se creó, probó y fusionó cada funcionalidad junto con su Pull Request correspondiente.
+
+#### Configuración de `.gitignore`
+El archivo `.gitignore` excluye:
+- `node_modules/`: Dependencias externas instalables mediante `npm ci`.
+- `dist/`: Directorio generado por el comando `npm run build` para la publicación en Vercel.
+- `coverage/`, `playwright-report/`, `test-results/`: Archivos temporales e informes generados durante la ejecución de las suites de prueba.
+- `docs/`: Documentación estática autogenerada con JSDoc.
+- Archivos residuales del sistema (`.DS_Store`, `Thumbs.db`, `*.log`).
 
 | Rama | Funcionalidad | *Pull request* |
 |------|---------------|----------------|
-| | | |
+| `sprint-1-auth` | Usuarios, sesión, roles, avisos y CI paso 1 | |
 
 **Versión de entrega:** `v1.0`
