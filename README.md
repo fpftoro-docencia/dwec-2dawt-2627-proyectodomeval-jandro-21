@@ -190,7 +190,7 @@ Para considerar una tarea o funcionalidad completada e integrada, debe satisface
 | 2 | `v0.2` | CRUD completo de festivales, drag & drop de artistas, buscador con debounce, paginación, panel de administración y CI completo con E2E y cobertura. | |
 | 3 | `v1.0` | Despliegue continuo en Vercel, vistas previas probadas, prueba de humo, release en GitHub y documentación JSDoc completa. | |
 
-**Tablero de Trello:** <!-- enlace (compartido con el profesor) -->
+**Tablero de Trello:** [BeatFest Manager en Trello](https://trello.com/b/LfmqfxHl/beatfest-manager) (compartido con el profesor)
 
 **Blog del proyecto:** [blog/README.md](blog/README.md)
 
