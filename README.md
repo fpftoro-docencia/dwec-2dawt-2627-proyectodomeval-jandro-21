@@ -186,7 +186,7 @@ Para considerar una tarea o funcionalidad completada e integrada, debe satisface
 
 | Sprint | *Tag* | Qué incluye | Reflexión |
 |--------|-------|-------------|-----------|
-| 1 | `v0.1` | Gestión de usuarios, sesión, roles, validaciones de registro, sistema de avisos y primera integración continua con ESLint y tests unitarios. | |
+| 1 | `v0.1` | Gestión de usuarios, sesión, roles, validaciones de registro, sistema de avisos y primera integración continua con ESLint y tests unitarios. | La separación en módulos independientes y la inyección de dependencias para el almacenamiento facilitaron crear tests rápidos y con 100% de cobertura en funciones puras. La validación con captura de `blur` y el feedback en tiempo real de la contraseña funcionaron a la perfección. Como aprendizaje, el cálculo asíncrono del hash obligó a blindar el formulario contra dobles envíos. Para el Sprint 2 diseñaré primero el flujo de eventos del CRUD y la delegación en el DOM antes de escribir las plantillas. |
 | 2 | `v0.2` | CRUD completo de festivales, drag & drop de artistas, buscador con debounce, paginación, panel de administración y CI completo con E2E y cobertura. | |
 | 3 | `v1.0` | Despliegue continuo en Vercel, vistas previas probadas, prueba de humo, release en GitHub y documentación JSDoc completa. | |
 
@@ -208,6 +208,6 @@ El archivo `.gitignore` excluye:
 
 | Rama | Funcionalidad | *Pull request* |
 |------|---------------|----------------|
-| `sprint-1-auth` | Usuarios, sesión, roles, avisos y CI paso 1 | |
+| `sprint-1-auth` | Usuarios, sesión, roles, avisos, páginas base y CI paso 1 | |
 
 **Versión de entrega:** `v1.0`
