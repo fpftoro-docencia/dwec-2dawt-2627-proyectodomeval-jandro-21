@@ -1,0 +1,23 @@
+# Dependencias de npm
+node_modules/
+
+# Salida de construcción y empaquetado
+dist/
+
+# Informes de pruebas y cobertura
+coverage/
+playwright-report/
+test-results/
+
+# Documentación generada con JSDoc
+docs/
+
+# Archivos de depuración y logs
+*.log
+
+# Archivos del sistema operativo y del editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
