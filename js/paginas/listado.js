@@ -17,7 +17,7 @@ import { iniciarAvisos } from '../componentes/avisos.js';
  */
 export function iniciarPaginaListado(
   documento = document,
-  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {}
+  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {},
 ) {
   // Protección de página privada: sin sesión redirige a index.html
   if (!haySesion(almacenSesion)) {

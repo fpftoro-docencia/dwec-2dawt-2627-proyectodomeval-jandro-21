@@ -6,7 +6,11 @@
 import { haySesion, iniciarSesion } from '../datos/sesion.js';
 import { verificarCredenciales } from '../datos/usuarios.js';
 import { resumirClave } from '../clave.js';
-import { iniciarAvisos, lanzarAviso, guardarAvisoParaSiguientePagina } from '../componentes/avisos.js';
+import {
+  iniciarAvisos,
+  lanzarAviso,
+  guardarAvisoParaSiguientePagina,
+} from '../componentes/avisos.js';
 
 /**
  * Inicializa la página de inicio de sesión.
@@ -25,7 +29,7 @@ export function iniciarPaginaLogin(
     almacenSesion = sessionStorage,
     resumir = resumirClave,
     navegar = (url) => location.replace(url),
-  } = {}
+  } = {},
 ) {
   // Si ya hay sesión activa, redirige inmediatamente al listado
   if (haySesion(almacenSesion)) {
@@ -107,7 +111,7 @@ export function iniciarPaginaLogin(
       guardarAvisoParaSiguientePagina(
         `¡Bienvenido de nuevo a BeatFest, ${usuario.nombre}!`,
         'success',
-        almacenSesion
+        almacenSesion,
       );
       navegar('listado.html');
     } finally {

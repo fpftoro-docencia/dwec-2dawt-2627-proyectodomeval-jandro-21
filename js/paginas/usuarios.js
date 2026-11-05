@@ -6,10 +6,7 @@
  */
 import { haySesion, esAdministrador } from '../datos/sesion.js';
 import { iniciarCabecera } from '../componentes/cabecera.js';
-import {
-  iniciarAvisos,
-  guardarAvisoParaSiguientePagina,
-} from '../componentes/avisos.js';
+import { iniciarAvisos, guardarAvisoParaSiguientePagina } from '../componentes/avisos.js';
 
 /**
  * Inicializa la página de administración de usuarios.
@@ -21,7 +18,7 @@ import {
  */
 export function iniciarPaginaUsuarios(
   documento = document,
-  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {}
+  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {},
 ) {
   // Protección 1: Si no hay sesión, expulsa a index.html
   if (!haySesion(almacenSesion)) {
@@ -34,7 +31,7 @@ export function iniciarPaginaUsuarios(
     guardarAvisoParaSiguientePagina(
       'Acceso denegado: solo los administradores pueden acceder a la gestión de usuarios',
       'danger',
-      almacenSesion
+      almacenSesion,
     );
     navegar('listado.html');
     return;

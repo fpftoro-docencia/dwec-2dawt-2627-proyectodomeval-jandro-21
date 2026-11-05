@@ -44,7 +44,7 @@ describe('Pruebas de Integración: Autenticación, Registro y Rutas Protegidas',
       await registrarUsuario(
         { nombre: 'Promotor1', correo: 'p1@fest.es', clave: 'Valida123' },
         almacenUsuarios,
-        resumirFalso
+        resumirFalso,
       );
 
       cargarPagina('index.html');
@@ -70,7 +70,7 @@ describe('Pruebas de Integración: Autenticación, Registro y Rutas Protegidas',
       expect(document.activeElement).toBe(campoClave);
       expect(navegar).not.toHaveBeenCalled();
       expect(document.querySelector('#zona-avisos').textContent).toContain(
-        'Usuario o contraseña incorrectos'
+        'Usuario o contraseña incorrectos',
       );
     });
 
@@ -78,7 +78,7 @@ describe('Pruebas de Integración: Autenticación, Registro y Rutas Protegidas',
       await registrarUsuario(
         { nombre: 'Kelsier', correo: 'kelsier@fest.es', clave: 'ClaveSegura1' },
         almacenUsuarios,
-        resumirFalso
+        resumirFalso,
       );
 
       cargarPagina('index.html');

@@ -18,7 +18,11 @@ import {
   validarRepeticionClave,
   validarTerminos,
 } from '../logica/validadores.js';
-import { iniciarAvisos, lanzarAviso, guardarAvisoParaSiguientePagina } from '../componentes/avisos.js';
+import {
+  iniciarAvisos,
+  lanzarAviso,
+  guardarAvisoParaSiguientePagina,
+} from '../componentes/avisos.js';
 
 const SVG_CHECK = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 10l3 3 6-6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const SVG_CIRCLE = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke-width="2"/></svg>`;
@@ -40,7 +44,7 @@ export function iniciarPaginaRegistro(
     almacenSesion = sessionStorage,
     resumir = resumirClave,
     navegar = (url) => location.replace(url),
-  } = {}
+  } = {},
 ) {
   if (haySesion(almacenSesion)) {
     navegar('listado.html');
@@ -188,7 +192,7 @@ export function iniciarPaginaRegistro(
         validarCampoRepetir();
       }
     },
-    true
+    true,
   );
 
   // Validación reactiva con input una vez que el usuario ya ha interactuado
@@ -263,7 +267,7 @@ export function iniciarPaginaRegistro(
           clave: campoClave.value,
         },
         almacenUsuarios,
-        resumir
+        resumir,
       );
 
       // Entra con la sesión iniciada automáticamente

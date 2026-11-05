@@ -18,7 +18,7 @@ import { guardarAvisoParaSiguientePagina } from './avisos.js';
  */
 export function iniciarCabecera(
   documento = document,
-  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {}
+  { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {},
 ) {
   const sesion = obtenerSesion(almacenSesion);
   if (!sesion) {
