@@ -20,7 +20,7 @@
   </head>
   <body>
     <!-- Cabecera pública -->
-    <header class="navbar navbar-beatfest py-3">
+    <header class="navbar navbar-beatfest py-2 py-sm-3">
       <div class="container d-flex justify-content-between align-items-center">
         <a class="brand-container" href="index.html" aria-label="Inicio BeatFest Manager">
           <svg
@@ -98,7 +98,8 @@
               <line x1="20" y1="8" x2="20" y2="14" />
               <line x1="23" y1="11" x2="17" y2="11" />
             </svg>
-            Crear cuenta
+            <span class="d-none d-sm-inline">Crear cuenta</span>
+            <span class="d-inline d-sm-none">Registro</span>
           </a>
         </div>
       </div>
@@ -109,10 +110,10 @@
       <div id="zona-avisos" role="status" aria-live="polite"></div>
     </div>
 
-    <main class="container my-5">
+    <main class="container my-3 my-sm-4 my-md-5">
       <div class="row justify-content-center">
         <div class="col-12 col-md-7 col-lg-5">
-          <div class="card-beatfest p-4 p-sm-5">
+          <div class="card-beatfest p-3 p-sm-4 p-md-5">
             <div class="card-beatfest-header text-center">
               <span class="badge badge-fest-yellow mb-2">Acceso Oficial</span>
               <h1 class="h3 fw-bold mb-2 text-uppercase letter-spacing-1">Acceso Promotor</h1>
@@ -120,7 +121,7 @@
             </div>
 
             <form id="form-login" novalidate>
-              <div class="mb-4">
+              <div class="mb-3 mb-sm-4">
                 <label for="login-nombre" class="form-label">Nombre de usuario</label>
                 <input
                   type="text"
@@ -135,7 +136,7 @@
                 <div id="error-login-nombre" class="invalid-feedback"></div>
               </div>
 
-              <div class="mb-4">
+              <div class="mb-3 mb-sm-4">
                 <label for="login-clave" class="form-label">Contraseña</label>
                 <input
                   type="password"
@@ -150,7 +151,11 @@
                 <div id="error-login-clave" class="invalid-feedback"></div>
               </div>
 
-              <button type="submit" id="btn-login-enviar" class="btn-edgy-primary w-100 py-3 mb-4">
+              <button
+                type="submit"
+                id="btn-login-enviar"
+                class="btn-edgy-primary w-100 py-3 mb-3 mb-sm-4"
+              >
                 <svg
                   width="18"
                   height="18"
