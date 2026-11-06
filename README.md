@@ -138,14 +138,15 @@ En `eslint.config.js` se han añadido las siguientes reglas adicionales que no v
 
 ### El workflow
 
-<!-- Sprints 1 y 2. Qué hace ci.yml: cuándo se ejecuta, la tabla de sus trabajos y por qué están en
-     ese orden, qué artefactos sube y para qué sirven, y qué hace concurrency. -->
+El flujo de integración continua está definido en `.github/workflows/ci.yml`. Se desencadena automáticamente con cada `push` o `pull_request` contra la rama `main`. Los trabajos se ejecutan secuencialmente mediante la directiva `needs`:
 
 | Trabajo | Espera a | Pasos | Artefacto |
-|---------|----------|-------|-----------|
-| `Calidad` | — | | — |
-| `Tests` | | | |
-| `E2E` | | | |
+|---|---|---|---|
+| `Calidad` | — | `actions/checkout`, `actions/setup-node`, `npm ci`, `npm run lint`, `npm run format:check` | — |
+| `Tests` | `Calidad` | `actions/checkout`, `actions/setup-node`, `npm ci`, `npm test` | — |
+| `E2E` *(Sprint 2)* | `Tests` | *Pruebas de extremo a extremo con Playwright (Sprint 2)* | *Informe de Playwright (Sprint 2)* |
+
+El orden responde al principio de «fallo temprano» (*fail-fast*): si el código incumple las reglas de calidad o estilo, el flujo se detiene de inmediato en el trabajo `Calidad`, ahorrando tiempo y minutos de cómputo en GitHub Actions.
 
 **Ejecución en verde con sus artefactos:** <!-- enlace -->
 

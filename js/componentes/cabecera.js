@@ -7,6 +7,7 @@
  */
 import { obtenerSesion, cerrarSesion } from '../datos/sesion.js';
 import { guardarAvisoParaSiguientePagina } from './avisos.js';
+import { iniciarTema } from './tema.js';
 
 /**
  * Inicializa y sincroniza la cabecera con la sesión activa.
@@ -20,6 +21,8 @@ export function iniciarCabecera(
   documento = document,
   { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {},
 ) {
+  iniciarTema(documento);
+
   const sesion = obtenerSesion(almacenSesion);
   if (!sesion) {
     return;

@@ -11,6 +11,7 @@ import {
   lanzarAviso,
   guardarAvisoParaSiguientePagina,
 } from '../componentes/avisos.js';
+import { iniciarTema } from '../componentes/tema.js';
 
 /**
  * Inicializa la página de inicio de sesión.
@@ -37,6 +38,7 @@ export function iniciarPaginaLogin(
     return;
   }
 
+  iniciarTema(documento);
   iniciarAvisos(documento, almacenSesion);
 
   const formulario = documento.querySelector('#form-login');

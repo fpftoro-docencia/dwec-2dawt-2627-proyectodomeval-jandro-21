@@ -6,6 +6,17 @@
     <title>Cartel y Jornadas · BeatFest Manager</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/estilos.css" />
+    <script>
+      (function () {
+        const guardado = localStorage.getItem('beatfest_theme');
+        const tema =
+          guardado ||
+          (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+            ? 'light'
+            : 'dark');
+        document.documentElement.setAttribute('data-theme', tema);
+      })();
+    </script>
   </head>
   <body>
     <!-- Cabecera compartida para páginas privadas -->
@@ -37,6 +48,44 @@
 
         <!-- Usuario activo y botón cerrar sesión -->
         <div class="d-flex align-items-center gap-3">
+          <button
+            type="button"
+            class="btn-theme-toggle"
+            aria-label="Cambiar tema claro u oscuro"
+            title="Cambiar tema"
+          >
+            <svg
+              class="icon-sun"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+          </button>
           <div class="d-flex align-items-center gap-2 text-end d-none d-sm-flex">
             <svg
               width="20"
@@ -85,6 +134,7 @@
     <main class="container my-5">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
+          <span class="badge badge-fest-lime mb-2">Cartel Oficial</span>
           <h1 class="h2 fw-bold text-uppercase letter-spacing-1 mb-1">Cartel del Festival</h1>
           <p class="text-secondary mb-0">
             Escenarios, programación de directos y orden de artistas
