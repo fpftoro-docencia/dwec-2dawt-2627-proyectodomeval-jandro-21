@@ -359,7 +359,7 @@ main {
 }
 
 /* ==========================================================================
-   Cabecera y Navegación Mobile-First
+   Cabecera y Navegación Mobile-First y Desktop
    ========================================================================== */
 .navbar-beatfest {
   background-color: var(--bf-card-bg);
@@ -374,8 +374,35 @@ main {
 @media (min-width: 768px) {
   .navbar-beatfest {
     box-shadow: 0 4px 0 var(--bf-shadow);
-    padding: 0.9rem 0;
+    padding: 0.85rem 0;
   }
+}
+
+.header-beatfest-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 0.65rem;
+  column-gap: 0.75rem;
+}
+
+.header-brand {
+  order: 1;
+}
+
+.header-user-actions {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: right;
 }
 
 .brand-container {
@@ -438,18 +465,65 @@ main {
   color: var(--bf-color-cyan);
 }
 
-/* Barra de navegación interna (Horizontal scrollable en móviles) */
+/* Barra de navegación interna (Horizontal scrollable en móviles, integrada a la izquierda en desktop) */
 .nav-beatfest-menu {
+  order: 3;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 0.4rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  padding-top: 0.25rem;
+  padding-bottom: 0.15rem;
 }
 
 .nav-beatfest-menu::-webkit-scrollbar {
   display: none;
+}
+
+/* Modo Desktop (min-width: 768px y min-width: 992px) */
+@media (min-width: 768px) {
+  .header-beatfest-container {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    row-gap: 0;
+    column-gap: 0;
+  }
+
+  .header-brand {
+    order: 1;
+    flex-shrink: 0;
+  }
+
+  .nav-beatfest-menu {
+    order: 2;
+    width: auto;
+    overflow-x: visible;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: 1.75rem;
+    gap: 0.6rem;
+  }
+
+  .header-user-actions {
+    order: 3;
+    margin-left: auto;
+    flex-shrink: 0;
+    gap: 0.75rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .nav-beatfest-menu {
+    margin-left: 2.5rem;
+    gap: 0.75rem;
+  }
+
+  .header-user-actions {
+    gap: 1rem;
+  }
 }
 
 .nav-link-edgy {
@@ -496,6 +570,12 @@ main {
   background-color: var(--bf-color-yellow);
   border-color: var(--bf-border);
   box-shadow: 3px 3px 0 var(--bf-shadow);
+}
+
+.nav-link-edgy.active:hover {
+  background-color: var(--bf-color-yellow);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--bf-shadow);
 }
 
 /* ==========================================================================

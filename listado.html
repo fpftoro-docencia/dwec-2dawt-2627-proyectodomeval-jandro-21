@@ -20,9 +20,13 @@
   </head>
   <body>
     <!-- Cabecera compartida para páginas privadas -->
-    <header class="navbar navbar-beatfest py-2 py-sm-3">
-      <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <a class="brand-container order-1" href="listado.html" aria-label="Inicio BeatFest Manager">
+    <header class="navbar navbar-beatfest">
+      <div class="container header-beatfest-container">
+        <a
+          class="brand-container header-brand"
+          href="listado.html"
+          aria-label="Inicio BeatFest Manager"
+        >
           <svg
             class="brand-icon"
             viewBox="0 0 24 24"
@@ -44,8 +48,8 @@
           <span class="brand-text">Beat<span>Fest</span></span>
         </a>
 
-        <!-- Menú de navegación privado (Mobile-first: barra horizontal inferior en móvil, inline en escritorio) -->
-        <nav class="nav-beatfest-menu order-3 order-md-2 w-100 w-md-auto mt-2 mt-md-0">
+        <!-- Menú de navegación privado -->
+        <nav class="nav-beatfest-menu">
           <a href="listado.html" class="nav-link-edgy active" aria-current="page">
             Cartel y Jornadas
           </a>
@@ -55,7 +59,7 @@
         </nav>
 
         <!-- Usuario activo y botón cerrar sesión -->
-        <div class="d-flex align-items-center gap-2 gap-sm-3 order-2 order-md-3">
+        <div class="header-user-actions">
           <button
             type="button"
             class="btn-theme-toggle"
@@ -94,7 +98,7 @@
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
             </svg>
           </button>
-          <div class="d-flex align-items-center gap-2 text-end d-none d-sm-flex">
+          <div class="header-user-info d-none d-sm-flex">
             <svg
               width="20"
               height="20"
