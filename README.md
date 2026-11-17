@@ -208,6 +208,7 @@ El archivo `.gitignore` excluye:
 
 | Rama | Funcionalidad | *Pull request* |
 |------|---------------|----------------|
-| `sprint-1-auth` | Usuarios, sesión, roles, avisos, páginas base y CI paso 1 | |
+| `sprint-1-auth` | Usuarios, sesión, roles, avisos, páginas base y CI paso 1 | #2 |
+| `despliegue-vercel` | Configuración de despliegue en Vercel (`vercel.json`) y verificación de vista previa | |
 
 **Versión de entrega:** `v1.0`
