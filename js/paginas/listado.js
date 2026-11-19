@@ -3,11 +3,13 @@
  * Implementa búsqueda con debounce insensible a mayúsculas y acentos,
  * renderizado mediante template y textContent (inmune a XSS),
  * paginación sincronizada con la URL e interfaz modal accesible con <dialog>.
+ * Soporta control global para administradores: visualización y gestión de las
+ * jornadas de todos los promotores de la plataforma.
  *
  * @module paginas/listado
  */
 import { haySesion, obtenerUsuarioActual } from '../datos/sesion.js';
-import { obtenerJornadas, eliminarJornada } from '../datos/jornadas.js';
+import { obtenerJornadas, obtenerTodasLasJornadas, eliminarJornada } from '../datos/jornadas.js';
 import { paginar } from '../logica/paginar.js';
 import { renderizarPaginacion } from '../componentes/paginacion.js';
 import { iniciarCabecera } from '../componentes/cabecera.js';
@@ -64,6 +66,8 @@ export function iniciarPaginaListado(
     return;
   }
 
+  const esAdmin = usuarioActual.rol === 'administrador';
+
   const contenedorJornadas = documento.querySelector('#contenedor-jornadas');
   const mensajeVacio = documento.querySelector('#mensaje-vacio');
   const contadorResultados = documento.querySelector('#contador-resultados');
@@ -78,7 +82,24 @@ export function iniciarPaginaListado(
   const btnAceptarBorrado = documento.querySelector('#btn-aceptar-borrado');
 
   let idJornadaABorrar = null;
+  let propietarioJornadaABorrar = null;
   let temporizadorDebounce = null;
+
+  // Ajuste visual para el rol administrador (Control Total de Festivales)
+  if (esAdmin) {
+    const subtituloListado = documento.querySelector('#subtitulo-listado');
+    if (subtituloListado) {
+      subtituloListado.textContent =
+        'Panel Global de Administrador · Control total de jornadas de todos los promotores';
+    }
+    const badgeOficial = documento.querySelector('.badge-fest-lime');
+    if (badgeOficial) {
+      badgeOficial.textContent = 'Control Total · Administrador';
+    }
+    if (inputBuscador) {
+      inputBuscador.placeholder = 'Buscar por nombre, género, licencia, CIF o promotor...';
+    }
+  }
 
   // Leer página inicial desde la URL (?pagina=X)
   let paginaActual = 1;
@@ -105,12 +126,14 @@ export function iniciarPaginaListado(
   };
 
   /**
-   * Obtiene la lista de jornadas del usuario y aplica el filtro de búsqueda.
+   * Obtiene la lista de jornadas (del usuario o todas si es administrador) y aplica el filtro.
    *
    * @returns {Array<object>}
    */
   const obtenerJornadasFiltradas = () => {
-    const todas = obtenerJornadas(usuarioActual.nombre, almacenJornadas);
+    const todas = esAdmin
+      ? obtenerTodasLasJornadas(almacenJornadas)
+      : obtenerJornadas(usuarioActual.nombre, almacenJornadas);
     const termino = inputBuscador ? normalizarTexto(inputBuscador.value.trim()) : '';
 
     if (!termino) {
@@ -122,11 +145,13 @@ export function iniciarPaginaListado(
       const genero = normalizarTexto(j.generoMusical);
       const licencia = normalizarTexto(j.codigoLicencia);
       const cif = normalizarTexto(j.cifPromotora);
+      const propietario = normalizarTexto(j.propietario);
       return (
         nombre.includes(termino) ||
         genero.includes(termino) ||
         licencia.includes(termino) ||
-        cif.includes(termino)
+        cif.includes(termino) ||
+        propietario.includes(termino)
       );
     });
   };
@@ -195,6 +220,14 @@ export function iniciarPaginaListado(
         elAcceso.textContent = `Acceso ${jornada.tipoAcceso}`;
       }
 
+      // Insignia de promotor propietario (especialmente para visibilidad del administrador)
+      const elPromotor = clon.querySelector('.badge-promotor');
+      if (elPromotor) {
+        const nombrePromotor = jornada.propietario || usuarioActual.nombre;
+        elPromotor.textContent = `Promotor: @${nombrePromotor}`;
+        elPromotor.hidden = false;
+      }
+
       const elAforo = clon.querySelector('.jornada-aforo');
       if (elAforo) {
         elAforo.textContent = Number(jornada.aforoMaximo).toLocaleString('es-ES');
@@ -248,6 +281,10 @@ export function iniciarPaginaListado(
       const enlaceEditar = clon.querySelector('.enlace-editar');
       if (enlaceEditar) {
         enlaceEditar.href = `ficha.html?id=${encodeURIComponent(jornada.id)}`;
+        enlaceEditar.dataset.id = jornada.id;
+        if (jornada.propietario) {
+          enlaceEditar.dataset.propietario = jornada.propietario;
+        }
       }
 
       // Botón borrar
@@ -255,26 +292,35 @@ export function iniciarPaginaListado(
       if (btnBorrar) {
         btnBorrar.dataset.id = jornada.id;
         btnBorrar.dataset.nombre = jornada.nombreJornada;
+        if (jornada.propietario) {
+          btnBorrar.dataset.propietario = jornada.propietario;
+        }
       }
 
       fragmento.appendChild(clon);
     });
 
-    // Sustitución del contenido de una sola vez
     contenedorJornadas.appendChild(fragmento);
 
-    // Renderizar controles de paginación
-    renderizarPaginacion(navPaginacion, {
-      paginaActual: resultadoPaginacion.pagina,
-      totalPaginas: resultadoPaginacion.totalPaginas,
-      alCambiarPagina: (nuevaPagina) => {
-        paginaActual = nuevaPagina;
-        renderizarListado();
-      },
-    });
+    // Requisito 16: Renderizar componente reutilizable de paginación
+    if (navPaginacion) {
+      renderizarPaginacion(
+        navPaginacion,
+        resultadoPaginacion.pagina,
+        resultadoPaginacion.totalPaginas,
+        (nuevaPagina) => {
+          paginaActual = nuevaPagina;
+          renderizarListado();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+      );
+    }
   };
 
-  // 2. Buscador con Debounce (Requisito 15)
+  // Render inicial del catálogo
+  renderizarListado();
+
+  // 2. Buscador en tiempo real con patrón Debounce de 300 ms (Requisito 15)
   if (inputBuscador) {
     inputBuscador.addEventListener('input', () => {
       clearTimeout(temporizadorDebounce);
@@ -295,6 +341,7 @@ export function iniciarPaginaListado(
       }
 
       idJornadaABorrar = btnBorrar.dataset.id;
+      propietarioJornadaABorrar = btnBorrar.dataset.propietario || usuarioActual.nombre;
       const nombre = btnBorrar.dataset.nombre || 'esta jornada';
 
       if (nombreJornadaBorrar) {
@@ -315,6 +362,7 @@ export function iniciarPaginaListado(
   if (btnCancelarBorrado && dialogBorrado) {
     btnCancelarBorrado.addEventListener('click', () => {
       idJornadaABorrar = null;
+      propietarioJornadaABorrar = null;
       if (typeof dialogBorrado.close === 'function') {
         dialogBorrado.close();
       } else {
@@ -327,8 +375,9 @@ export function iniciarPaginaListado(
   if (btnAceptarBorrado && dialogBorrado) {
     btnAceptarBorrado.addEventListener('click', () => {
       if (idJornadaABorrar) {
-        eliminarJornada(usuarioActual.nombre, idJornadaABorrar, almacenJornadas);
+        eliminarJornada(propietarioJornadaABorrar, idJornadaABorrar, almacenJornadas);
         idJornadaABorrar = null;
+        propietarioJornadaABorrar = null;
 
         if (typeof dialogBorrado.close === 'function') {
           dialogBorrado.close();
@@ -337,17 +386,17 @@ export function iniciarPaginaListado(
         }
 
         lanzarAviso(documento.body, 'Jornada eliminada correctamente del cartel', 'info');
-
         renderizarListado();
       }
     });
   }
-
-  // Carga inicial del catálogo
-  renderizarListado();
 }
 
 // Auto-arranque en navegador
-if (typeof window !== 'undefined' && document.querySelector('#contenedor-jornadas')) {
-  iniciarPaginaListado(document);
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('#contenedor-jornadas')) {
+      iniciarPaginaListado(document);
+    }
+  });
 }
