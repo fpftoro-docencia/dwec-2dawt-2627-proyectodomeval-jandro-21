@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Promotor · BeatFest Manager</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+    <script>
+      (function () {
+        const guardado = localStorage.getItem('beatfest_theme');
+        const tema =
+          guardado ||
+          (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+            ? 'light'
+            : 'dark');
+        document.documentElement.setAttribute('data-theme', tema);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Cabecera pública -->
+    <header class="navbar navbar-beatfest">
+      <div class="container d-flex justify-content-between align-items-center">
+        <a class="brand-container" href="index.html" aria-label="Inicio BeatFest Manager">
+          <svg
+            class="brand-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"
+            />
+            <path d="M10 12v3" />
+            <path d="M12 9v6" />
+            <path d="M14 11v4" />
+          </svg>
+          <span class="brand-text">Beat<span>Fest</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            class="btn-theme-toggle"
+            aria-label="Cambiar tema claro u oscuro"
+            title="Cambiar tema"
+          >
+            <svg
+              class="icon-sun"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+          </button>
+          <a href="index.html" class="btn-edgy-outline">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            <span class="d-none d-sm-inline">Iniciar sesión</span>
+            <span class="d-inline d-sm-none">Entrar</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Zona accesible de avisos -->
+    <div class="container mt-4">
+      <div id="zona-avisos" role="status" aria-live="polite"></div>
+    </div>
+
+    <main class="container my-3 my-sm-4 my-md-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-7">
+          <div class="card-beatfest p-3 p-sm-4 p-md-5">
+            <div class="card-beatfest-header text-center">
+              <span class="badge badge-fest-cyan mb-2">Comunidad BeatFest</span>
+              <h1 class="h3 fw-bold mb-2 text-uppercase letter-spacing-1">Crear Cuenta Promotor</h1>
+              <p class="text-secondary small mb-0">
+                El primer registro obtendrá el rango de
+                <span class="badge badge-admin ms-1">Administrador</span>
+              </p>
+            </div>
+
+            <form id="form-registro" novalidate>
+              <!-- Nombre de usuario -->
+              <div class="mb-4">
+                <label for="registro-nombre" class="form-label">Nombre de usuario</label>
+                <input
+                  type="text"
+                  class="form-control form-control-beatfest"
+                  id="registro-nombre"
+                  name="nombre"
+                  placeholder="ej. sound_distorsion"
+                  autocomplete="username"
+                  aria-describedby="error-registro-nombre"
+                  required
+                />
+                <div id="error-registro-nombre" class="invalid-feedback"></div>
+                <div class="text-secondary small mt-1">
+                  De 3 a 20 caracteres (letras, números, guion y guion bajo).
+                </div>
+              </div>
+
+              <!-- Correo electrónico -->
+              <div class="mb-4">
+                <label for="registro-correo" class="form-label">Correo electrónico</label>
+                <input
+                  type="email"
+                  class="form-control form-control-beatfest"
+                  id="registro-correo"
+                  name="correo"
+                  placeholder="promotor@beatfest.live"
+                  autocomplete="email"
+                  aria-describedby="error-registro-correo"
+                  required
+                />
+                <div id="error-registro-correo" class="invalid-feedback"></div>
+              </div>
+
+              <!-- Contraseña -->
+              <div class="mb-4">
+                <label for="registro-clave" class="form-label">Contraseña de acceso</label>
+                <input
+                  type="password"
+                  class="form-control form-control-beatfest"
+                  id="registro-clave"
+                  name="clave"
+                  placeholder="Clave de alta seguridad"
+                  autocomplete="new-password"
+                  aria-describedby="error-registro-clave lista-requisitos"
+                  required
+                />
+                <div id="error-registro-clave" class="invalid-feedback"></div>
+
+                <!-- Requisitos visuales con SVGs -->
+                <ul class="requisitos-clave" id="lista-requisitos">
+                  <li id="req-longitud">
+                    <svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7" stroke-width="2" />
+                    </svg>
+                    <span>Mínimo 8 caracteres de longitud</span>
+                  </li>
+                  <li id="req-minuscula">
+                    <svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7" stroke-width="2" />
+                    </svg>
+                    <span>Al menos una letra minúscula</span>
+                  </li>
+                  <li id="req-mayuscula">
+                    <svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7" stroke-width="2" />
+                    </svg>
+                    <span>Al menos una letra mayúscula</span>
+                  </li>
+                  <li id="req-cifra">
+                    <svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7" stroke-width="2" />
+                    </svg>
+                    <span>Al menos un número (0-9)</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Repetir contraseña -->
+              <div class="mb-4">
+                <label for="registro-repetir-clave" class="form-label">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  class="form-control form-control-beatfest"
+                  id="registro-repetir-clave"
+                  name="repetirClave"
+                  placeholder="Vuelve a escribir la contraseña exacta"
+                  autocomplete="new-password"
+                  aria-describedby="error-registro-repetir-clave"
+                  required
+                />
+                <div id="error-registro-repetir-clave" class="invalid-feedback"></div>
+              </div>
+
+              <!-- Casilla de aceptación -->
+              <div class="mb-4 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="registro-terminos"
+                  name="aceptarTerminos"
+                  aria-describedby="error-registro-terminos"
+                  required
+                />
+                <label class="form-check-label ps-2" for="registro-terminos">
+                  Acepto los términos de servicio, políticas de acceso y normas de la promotora
+                </label>
+                <div id="error-registro-terminos" class="invalid-feedback"></div>
+              </div>
+
+              <button
+                type="submit"
+                id="btn-registro-enviar"
+                class="btn-edgy-primary w-100 py-3 mb-4"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="8.5" cy="7" r="4" />
+                  <line x1="20" y1="8" x2="20" y2="14" />
+                  <line x1="23" y1="11" x2="17" y2="11" />
+                </svg>
+                Finalizar Registro
+              </button>
+
+              <div class="text-center pt-2 border-top border-secondary border-opacity-25">
+                <span class="text-secondary small">¿Ya posees una cuenta registrada?</span>
+                <a href="index.html" class="link-accent ms-1"> Inicia sesión aquí </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="text-center py-4 mt-auto">
+      <div class="container">
+        <small class="text-muted">© 2026 BeatFest Manager · Alternative Festival Platform</small>
+      </div>
+    </footer>
+
+    <script type="module" src="js/paginas/registro.js"></script>
+  </body>
+</html>

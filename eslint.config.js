@@ -15,6 +15,10 @@ export default [
       'no-var': 'error',
       'prefer-const': 'error',
       eqeqeq: 'error',
+      curly: ['error', 'all'],
+      camelcase: ['error', { properties: 'never' }],
+      'prefer-template': 'error',
+      'no-alert': 'error',
     },
   },
 ];

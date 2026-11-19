@@ -1,0 +1,92 @@
+name: Integración continua
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  calidad:
+    name: Calidad
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar linters y formato
+        run: |
+          npm run lint
+          npm run format:check
+
+  tests:
+    name: Tests
+    needs: calidad
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas y comprobar cobertura
+        run: npm run coverage
+
+      - name: Subir informe de cobertura como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-cobertura
+          path: coverage/
+
+  e2e:
+    name: E2E
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar navegador Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar pruebas de extremo a extremo
+        run: npm run e2e
+
+      - name: Subir informe de Playwright en caso de fallo
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-playwright
+          path: playwright-report/
