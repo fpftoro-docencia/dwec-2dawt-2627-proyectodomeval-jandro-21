@@ -6,36 +6,97 @@
     <title>Configurar Jornada · BeatFest Manager</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/estilos.css" />
+    <script>
+      (function () {
+        const guardado = localStorage.getItem('beatfest_theme');
+        const tema =
+          guardado ||
+          (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+            ? 'light'
+            : 'dark');
+        document.documentElement.setAttribute('data-theme', tema);
+      })();
+    </script>
   </head>
   <body>
     <!-- Cabecera compartida para páginas privadas -->
-    <header class="navbar navbar-beatfest py-3">
-      <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center gap-4">
-          <a class="brand-container" href="listado.html" aria-label="Inicio BeatFest Manager">
-            <svg
-              class="brand-icon"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-            <span class="brand-text">Beat<span>Fest</span></span>
-          </a>
+    <header class="navbar navbar-beatfest">
+      <div class="container header-beatfest-container">
+        <a
+          class="brand-container header-brand"
+          href="listado.html"
+          aria-label="Inicio BeatFest Manager"
+        >
+          <svg
+            class="brand-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"
+            />
+            <path d="M10 12v3" />
+            <path d="M12 9v6" />
+            <path d="M14 11v4" />
+          </svg>
+          <span class="brand-text">Beat<span>Fest</span></span>
+        </a>
 
-          <!-- Menú de navegación privado -->
-          <nav class="d-flex align-items-center gap-2">
-            <a href="listado.html" class="nav-link-edgy"> Cartel y Jornadas </a>
-            <a href="usuarios.html" id="enlace-nav-usuarios" class="nav-link-edgy" hidden>
-              Promotores
-            </a>
-          </nav>
-        </div>
+        <!-- Menú de navegación privado -->
+        <nav class="nav-beatfest-menu">
+          <a href="listado.html" class="nav-link-edgy"> Cartel y Jornadas </a>
+          <a href="usuarios.html" id="enlace-nav-usuarios" class="nav-link-edgy" hidden>
+            Promotores
+          </a>
+        </nav>
 
         <!-- Usuario activo y botón cerrar sesión -->
-        <div class="d-flex align-items-center gap-3">
-          <div class="d-flex align-items-center gap-2 text-end d-none d-sm-flex">
+        <div class="header-user-actions">
+          <button
+            type="button"
+            class="btn-theme-toggle"
+            aria-label="Cambiar tema claro u oscuro"
+            title="Cambiar tema"
+          >
+            <svg
+              class="icon-sun"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+              />
+            </svg>
+            <svg
+              class="icon-moon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+          </button>
+          <div class="header-user-info d-none d-sm-flex">
             <svg
               width="20"
               height="20"
@@ -80,20 +141,273 @@
       <div id="zona-avisos" role="status" aria-live="polite"></div>
     </div>
 
-    <main class="container my-5">
+    <main class="container my-3 my-sm-4 my-md-5">
       <div class="mb-4">
-        <h1 class="h2 fw-bold text-uppercase letter-spacing-1 mb-1">Configuración de Jornada</h1>
+        <h1 id="titulo-pagina-ficha" class="h2 fw-bold text-uppercase letter-spacing-1 mb-1">
+          Configuración de Jornada
+        </h1>
         <p class="text-secondary mb-0">
-          Alta y edición de datos del evento, control de aforo y organizador Drag &amp; Drop
+          Alta y edición de datos del evento, control de aforo y patrocinadores oficiales
         </p>
       </div>
 
-      <div class="card-beatfest p-5 text-center">
-        <p class="text-secondary mb-0">
-          Formulario de creación y edición (se implementará en el Sprint 2).
-        </p>
+      <div class="card-beatfest p-4 p-md-5">
+        <form id="form-jornada" novalidate>
+          <input type="hidden" name="id" id="jornada-id" value="" />
+
+          <!-- Datos Principales: Nombre y Fecha -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-8">
+              <label for="campo-nombre-jornada" class="form-label fw-bold">
+                Nombre de la jornada *
+              </label>
+              <input
+                type="text"
+                id="campo-nombre-jornada"
+                name="nombreJornada"
+                class="form-control"
+                data-validar="nombreJornada"
+                placeholder="Ej: Opening Rock Fest 2026"
+                aria-describedby="error-nombre-jornada"
+                required
+              />
+              <div id="error-nombre-jornada" class="invalid-feedback"></div>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="campo-fecha-evento" class="form-label fw-bold">
+                Fecha del evento *
+              </label>
+              <input
+                type="date"
+                id="campo-fecha-evento"
+                name="fechaEvento"
+                class="form-control"
+                data-validar="fechaEvento"
+                aria-describedby="error-fecha-evento"
+                required
+              />
+              <div id="error-fecha-evento" class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <!-- Género musical y Aforo -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-6">
+              <label for="campo-genero-musical" class="form-label fw-bold">
+                Género musical principal *
+              </label>
+              <select
+                id="campo-genero-musical"
+                name="generoMusical"
+                class="form-select"
+                data-validar="generoMusical"
+                aria-describedby="error-genero-musical"
+                required
+              >
+                <option value="">-- Selecciona un género --</option>
+                <option value="rock">Rock / Hard Rock</option>
+                <option value="electronic">Electrónica / Synthwave</option>
+                <option value="indie">Indie / Pop Alternativo</option>
+                <option value="metal">Metal / Core / Punk</option>
+                <option value="urban">Urbano / Hip Hop / Trap</option>
+              </select>
+              <div id="error-genero-musical" class="invalid-feedback"></div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="campo-aforo-maximo" class="form-label fw-bold">
+                Aforo máximo de asistentes (50 - 100.000) *
+              </label>
+              <input
+                type="number"
+                id="campo-aforo-maximo"
+                name="aforoMaximo"
+                min="50"
+                max="100000"
+                step="1"
+                class="form-control"
+                data-validar="aforo"
+                placeholder="Ej: 15000"
+                aria-describedby="error-aforo-maximo"
+                required
+              />
+              <div id="error-aforo-maximo" class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <!-- Tipo de acceso y Campo Condicional (Suplemento VIP) -->
+          <div class="row g-3 mb-3 align-items-end">
+            <div class="col-12 col-md-6">
+              <fieldset>
+                <legend class="form-label fw-bold mb-2">Tipo de Acceso al Recinto *</legend>
+                <div class="d-flex gap-3 flex-wrap">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="tipoAcceso"
+                      id="acceso-general"
+                      value="general"
+                      checked
+                    />
+                    <label class="form-check-label" for="acceso-general">General</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="tipoAcceso"
+                      id="acceso-vip"
+                      value="vip"
+                    />
+                    <label class="form-check-label" for="acceso-vip">VIP Backstage</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="tipoAcceso"
+                      id="acceso-barra-libre"
+                      value="barra_libre"
+                    />
+                    <label class="form-check-label" for="acceso-barra-libre">Barra Libre</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Campo condicional (solo visible y habilitado si VIP) -->
+            <div class="col-12 col-md-6" id="contenedor-suplemento-vip" hidden>
+              <label for="campo-suplemento-vip" class="form-label fw-bold">
+                Suplemento VIP (€) *
+              </label>
+              <input
+                type="number"
+                id="campo-suplemento-vip"
+                name="suplementoVip"
+                step="0.01"
+                min="0"
+                class="form-control"
+                data-validar="suplementoVip"
+                placeholder="Ej: 35.00"
+                aria-describedby="error-suplemento-vip"
+                disabled
+              />
+              <div id="error-suplemento-vip" class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <!-- Datos Legales y Técnicos: Licencia, Teléfono y CIF -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+              <label for="campo-codigo-licencia" class="form-label fw-bold">
+                Código de licencia *
+              </label>
+              <input
+                type="text"
+                id="campo-codigo-licencia"
+                name="codigoLicencia"
+                class="form-control text-uppercase"
+                data-validar="licencia"
+                placeholder="FEST-2026-ROCK"
+                aria-describedby="error-codigo-licencia"
+                required
+              />
+              <div id="error-codigo-licencia" class="invalid-feedback"></div>
+              <small class="form-text text-muted">Formato: FEST-AAAA-XXXX</small>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="campo-telefono-contacto" class="form-label fw-bold">
+                Teléfono móvil de contacto *
+              </label>
+              <input
+                type="tel"
+                id="campo-telefono-contacto"
+                name="telefonoContacto"
+                class="form-control"
+                data-validar="telefono"
+                placeholder="612345678"
+                aria-describedby="error-telefono-contacto"
+                required
+              />
+              <div id="error-telefono-contacto" class="invalid-feedback"></div>
+              <small class="form-text text-muted">9 dígitos comenzando por 6 o 7</small>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="campo-cif-promotora" class="form-label fw-bold">
+                CIF / DNI de la promotora *
+              </label>
+              <input
+                type="text"
+                id="campo-cif-promotora"
+                name="cifPromotora"
+                class="form-control text-uppercase"
+                data-validar="cif"
+                placeholder="B12345674 o 12345678Z"
+                aria-describedby="error-cif-promotora"
+                required
+              />
+              <div id="error-cif-promotora" class="invalid-feedback"></div>
+              <small class="form-text text-muted">Con validación de control</small>
+            </div>
+          </div>
+
+          <!-- Grupo dinámico: Patrocinadores Oficiales (0 a 3) -->
+          <div class="mb-4 p-3 border rounded bg-body-tertiary">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="h5 fw-bold mb-0">Patrocinadores Oficiales</h2>
+                <small class="text-secondary"
+                  >Añade hasta 3 patrocinadores o marcas aliadas (mínimo 0, máximo 3)</small
+                >
+              </div>
+              <button type="button" id="btn-agregar-patrocinador" class="btn-edgy-outline btn-sm">
+                + Añadir patrocinador
+              </button>
+            </div>
+
+            <div id="contenedor-patrocinadores" class="d-flex flex-column gap-2"></div>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div
+            class="d-flex gap-3 justify-content-end align-items-center flex-wrap pt-3 border-top"
+          >
+            <a href="listado.html" class="btn-edgy-outline"> Cancelar </a>
+            <button type="submit" id="btn-guardar-jornada" class="btn-edgy-primary">
+              Guardar Jornada
+            </button>
+          </div>
+        </form>
       </div>
     </main>
+
+    <!-- Plantilla Template para Patrocinador Dinámico -->
+    <template id="tpl-patrocinador">
+      <div class="item-patrocinador d-flex gap-2 align-items-start">
+        <div class="flex-grow-1">
+          <label class="form-label small fw-semibold label-patrocinador"></label>
+          <input
+            type="text"
+            name="patrocinadores"
+            class="form-control input-patrocinador"
+            data-validar="patrocinador"
+            placeholder="Nombre de la marca (ej: Vans, Monster, Fender)"
+          />
+          <div class="invalid-feedback error-patrocinador"></div>
+        </div>
+        <button
+          type="button"
+          class="btn-edgy-danger btn-quitar-patrocinador mt-4"
+          aria-label="Eliminar patrocinador"
+        >
+          &times;
+        </button>
+      </div>
+    </template>
 
     <footer class="text-center py-4 mt-auto">
       <div class="container">

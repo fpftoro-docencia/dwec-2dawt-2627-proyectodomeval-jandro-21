@@ -12,7 +12,7 @@ export const CLAVE_USUARIOS = 'usuarios';
  * Obtiene la lista completa de usuarios registrados.
  * Si los datos están dañados o no es un array, devuelve una lista vacía.
  *
- * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=localStorage]
+ * @param {Storage|object} [almacen=localStorage]
  * @returns {Array<object>}
  */
 export function obtenerUsuarios(almacen = localStorage) {
@@ -24,7 +24,7 @@ export function obtenerUsuarios(almacen = localStorage) {
  * Busca un usuario por su nombre de usuario (sin distinguir mayúsculas).
  *
  * @param {string} nombre
- * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=localStorage]
+ * @param {Storage|object} [almacen=localStorage]
  * @returns {object | null}
  */
 export function buscarUsuarioPorNombre(nombre, almacen = localStorage) {
@@ -44,7 +44,7 @@ export function buscarUsuarioPorNombre(nombre, almacen = localStorage) {
  * Busca un usuario por su correo electrónico.
  *
  * @param {string} correo
- * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=localStorage]
+ * @param {Storage|object} [almacen=localStorage]
  * @returns {object | null}
  */
 export function buscarUsuarioPorCorreo(correo, almacen = localStorage) {
@@ -69,7 +69,7 @@ export function buscarUsuarioPorCorreo(correo, almacen = localStorage) {
  * @param {string} datos.nombre
  * @param {string} datos.correo
  * @param {string} datos.clave
- * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=localStorage]
+ * @param {Storage|object} [almacen=localStorage]
  * @param {Function} [resumir=resumirClave]
  * @returns {Promise<object>} Datos del usuario registrado (sin clave en claro).
  */
@@ -119,7 +119,7 @@ export async function registrarUsuario(
  *
  * @param {string} nombre
  * @param {string} clave
- * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=localStorage]
+ * @param {Storage|object} [almacen=localStorage]
  * @param {Function} [resumir=resumirClave]
  * @returns {Promise<object | null>} Objeto de usuario si las credenciales coinciden, o null si fallan.
  */
@@ -144,5 +144,32 @@ export async function verificarCredenciales(
     nombre: usuario.nombre,
     correo: usuario.correo,
     rol: usuario.rol,
+  };
+}
+
+/**
+ * Modifica el rol de un usuario existente.
+ *
+ * @param {string} idUsuario
+ * @param {'administrador' | 'usuario'} nuevoRol
+ * @param {Storage|object} [almacen=localStorage]
+ * @returns {object | null} Usuario actualizado o null si no existe.
+ */
+export function cambiarRolUsuario(idUsuario, nuevoRol, almacen = localStorage) {
+  if (!idUsuario || (nuevoRol !== 'administrador' && nuevoRol !== 'usuario')) {
+    return null;
+  }
+  const usuarios = obtenerUsuarios(almacen);
+  const indice = usuarios.findIndex((u) => u && u.id === idUsuario);
+  if (indice === -1) {
+    return null;
+  }
+  usuarios[indice].rol = nuevoRol;
+  guardar(almacen, CLAVE_USUARIOS, usuarios);
+  return {
+    id: usuarios[indice].id,
+    nombre: usuarios[indice].nombre,
+    correo: usuarios[indice].correo,
+    rol: usuarios[indice].rol,
   };
 }
