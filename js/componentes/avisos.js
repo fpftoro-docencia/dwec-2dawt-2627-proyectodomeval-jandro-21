@@ -28,7 +28,7 @@ export function lanzarAviso(elemento, mensaje, tipo = 'info') {
  *
  * @param {string} mensaje
  * @param {'success' | 'danger' | 'info' | 'warning'} [tipo='info']
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  */
 export function guardarAvisoParaSiguientePagina(mensaje, tipo = 'info', almacen = sessionStorage) {
   guardar(almacen, CLAVE_AVISO_PENDIENTE, { mensaje, tipo });
@@ -37,7 +37,7 @@ export function guardarAvisoParaSiguientePagina(mensaje, tipo = 'info', almacen 
 /**
  * Recupera y consume el aviso guardado para la página actual (lo borra tras leerlo).
  *
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  * @returns {{ mensaje: string, tipo: string } | null}
  */
 export function consumirAvisoPendiente(almacen = sessionStorage) {
@@ -88,7 +88,7 @@ export function mostrarAvisoEnDOM(documento, mensaje, tipo) {
  * Inicializa el sistema de avisos: registra el único oyente en document y consume avisos pendientes.
  *
  * @param {Document} [documento=document]
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  */
 export function iniciarAvisos(documento = document, almacen = sessionStorage) {
   documento.addEventListener('aviso', (evento) => {

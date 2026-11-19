@@ -27,31 +27,3 @@
 
 3. **Qué hace `needs` en GitHub Actions:**  
    En el archivo de workflow `.github/workflows/ci.yml`, cada trabajo (*job*) se ejecuta por defecto en paralelo en máquinas virtuales independientes de Ubuntu. Al añadir `needs: calidad` al trabajo `Tests`, GitHub Actions impone un orden estricto de ejecución: `Tests` no arranca hasta que `Calidad` haya finalizado exitosamente en verde. Esto ahorra tiempo y consumo de recursos, ya que si el código tiene fallos de sintaxis o formato no tiene sentido malgastar minutos ejecutando las pruebas.
-
----
-
-## 17/11/2026 · Sprint 2 · CRUD, Zona de Administración, Paginación y CI Completo con E2E
-
-### Dificultades y cómo las resolví
-
-1. **Delegación de eventos frente a elementos creados dinámicamente (`closest`):**  
-   Al renderizar las jornadas del catálogo desde un `<template>` o al generar nuevos campos de patrocinadores en tiempo real, vincular oyentes independientes a cada botón de borrar o eliminar multiplicaría los oyentes en memoria y obligaría a reconectarlos tras cada filtrado o paginación. La solución fue registrar un único oyente en los contenedores padres (`#contenedor-jornadas`, `#contenedor-patrocinadores`, `#contenedor-usuarios`) aprovechando la fase de burbujeo (*bubbling*). Con `evento.target.closest('.btn-borrar')`, interceptamos la pulsación tanto si el usuario hace clic en el propio botón como si pulsa un icono SVG interno.
-
-2. **Sincronización reactiva de la URL con la paginación sin recargar la página:**  
-   El requisito 16 exige que el número de página activa viaje en la barra de direcciones (`?pagina=2`) para que al recargar el navegador sigamos en la misma página. Cambiar directamente `window.location.search` provocaría una recarga innecesaria de la página. Lo solucioné utilizando la API del historial con `history.replaceState({}, '', url.toString())` y `URLSearchParams`. De este modo, los parámetros se actualizan silenciosamente en la URL sin recargar y sin romper la experiencia de usuario.
-
-3. **Inmunidad contra inyección de código (XSS) al rellenar plantillas `<template>`:**  
-   Para pintar los datos de la jornada y de los usuarios creados dinámicamente, evitamos tajantemente el uso de `innerHTML` concatenando cadenas de texto. Todos los datos introducidos por el usuario (nombres, fechas, licencias, CIF) se inyectan estrictamente mediante `element.textContent` y `element.setAttribute('data-id', ...)`. Esto garantiza protección total contra ataques XSS sin necesidad de recurrir a librerías externas de saneamiento.
-
----
-
-### Problemas conceptuales
-
-1. **Buscador con debounce y temporizadores falsos (`vi.useFakeTimers`):**  
-   El patrón *debounce* pospone la ejecución del filtrado (300 ms) mientras el usuario sigue tecleando, evitando cálculos y repintados en cada pulsación. En las pruebas de integración, esperar 300 ms reales por cada caso haría los tests lentos. Gracias a `vi.useFakeTimers()`, sustituimos el reloj del sistema por uno controlado por software y adelantamos el tiempo al instante con `vi.advanceTimersByTime(300)` de forma determinista y ultrarrápida.
-
-2. **Expresión regular vs Validación algorítmica de control:**  
-   Una expresión regular comprueba la estructura sintáctica de un dato (por ejemplo, que el código de licencia coincida con `^FEST-\d{4}-[A-Z0-9]{4}$`). Sin embargo, una expresión regular es incapaz de validar reglas aritméticas como el dígito de control de un CIF o la letra de un DNI/NIE. Para cumplir con el requisito 13, combinamos la expresión regular con el algoritmo oficial de control: módulo 23 para personas físicas y algoritmo ponderado de sumas pares e impares para personas jurídicas (CIF).
-
-3. **Por qué Playwright y las pruebas E2E van en la cúspide de la pirámide de testing:**  
-   Las pruebas unitarias y de integración son muy rápidas y corren en memoria en Node.js con `happy-dom`. En cambio, las pruebas E2E ejecutan un navegador Chromium real, renderizan estilos y miden la interacción real del usuario de punta a punta. En el workflow de GitHub Actions, el trabajo `E2E` espera con `needs: tests` a que pasen la calidad y los tests unitarios con cobertura: si algo falla antes, no se gastan minutos de máquina virtual en instalar y ejecutar el navegador.

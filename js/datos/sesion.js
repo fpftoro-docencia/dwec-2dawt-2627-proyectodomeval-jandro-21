@@ -6,13 +6,12 @@
 import { leer, guardar, eliminar } from './almacen.js';
 
 export const CLAVE_SESION = 'sesion';
-export const obtenerUsuarioActual = obtenerSesion;
 
 /**
  * Obtiene los datos de la sesión activa.
  * Devuelve null si no hay sesión o si la información almacenada está corrupta.
  *
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  * @returns {{ nombre: string, rol: string } | null}
  */
 export function obtenerSesion(almacen = sessionStorage) {
@@ -37,7 +36,7 @@ export function obtenerSesion(almacen = sessionStorage) {
  * @param {object} usuario
  * @param {string} usuario.nombre
  * @param {string} usuario.rol
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  */
 export function iniciarSesion(usuario, almacen = sessionStorage) {
   if (!usuario || !usuario.nombre || !usuario.rol) {
@@ -52,7 +51,7 @@ export function iniciarSesion(usuario, almacen = sessionStorage) {
 /**
  * Cierra la sesión activa actual eliminando sus datos del almacenamiento.
  *
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  */
 export function cerrarSesion(almacen = sessionStorage) {
   eliminar(almacen, CLAVE_SESION);
@@ -61,7 +60,7 @@ export function cerrarSesion(almacen = sessionStorage) {
 /**
  * Comprueba si existe una sesión activa y válida.
  *
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  * @returns {boolean}
  */
 export function haySesion(almacen = sessionStorage) {
@@ -71,7 +70,7 @@ export function haySesion(almacen = sessionStorage) {
 /**
  * Determina si el usuario de la sesión activa tiene el rol de administrador.
  *
- * @param {Storage|object} [almacen=sessionStorage]
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} [almacen=sessionStorage]
  * @returns {boolean}
  */
 export function esAdministrador(almacen = sessionStorage) {

@@ -23,7 +23,6 @@ import {
   lanzarAviso,
   guardarAvisoParaSiguientePagina,
 } from '../componentes/avisos.js';
-import { iniciarTema } from '../componentes/tema.js';
 
 const SVG_CHECK = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 10l3 3 6-6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const SVG_CIRCLE = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke-width="2"/></svg>`;
@@ -36,7 +35,7 @@ const SVG_CIRCLE = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
  * @param {Storage} [opciones.almacenUsuarios=localStorage]
  * @param {Storage} [opciones.almacenSesion=sessionStorage]
  * @param {Function} [opciones.resumir=resumirClave]
- * @param {Function} [opciones.navegar]
+ * @param {(url: string) => void} [opciones.navegar=(url) => location.replace(url)]
  */
 export function iniciarPaginaRegistro(
   documento = document,
@@ -52,7 +51,6 @@ export function iniciarPaginaRegistro(
     return;
   }
 
-  iniciarTema(documento);
   iniciarAvisos(documento, almacenSesion);
 
   const formulario = documento.querySelector('#form-registro');

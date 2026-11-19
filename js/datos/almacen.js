@@ -9,7 +9,7 @@
  * Lee y deserializa un valor de un almacenamiento tipo Storage.
  * Si la clave no existe o los datos están corruptos (JSON inválido), devuelve el valor por defecto.
  *
- * @param {Storage|object} almacen
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} almacen
  * @param {string} clave
  * @param {unknown} valorPorDefecto
  * @returns {unknown}
@@ -29,7 +29,7 @@ export function leer(almacen, clave, valorPorDefecto) {
 /**
  * Serializa y guarda un valor en el almacenamiento.
  *
- * @param {Storage|object} almacen
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} almacen
  * @param {string} clave
  * @param {unknown} valor
  */
@@ -40,7 +40,7 @@ export function guardar(almacen, clave, valor) {
 /**
  * Elimina una clave del almacenamiento.
  *
- * @param {Storage|object} almacen
+ * @param {Storage | import('../../tests/AlmacenFalso.js').AlmacenFalso} almacen
  * @param {string} clave
  */
 export function eliminar(almacen, clave) {
