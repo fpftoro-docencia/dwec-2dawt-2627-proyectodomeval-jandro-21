@@ -7,7 +7,11 @@
  * @module paginas/ficha
  */
 import { haySesion, obtenerUsuarioActual } from '../datos/sesion.js';
-import { obtenerJornadaPorId, guardarJornada } from '../datos/jornadas.js';
+import {
+  obtenerJornadaPorId,
+  obtenerJornadaGlobalPorId,
+  guardarJornada,
+} from '../datos/jornadas.js';
 import { validadores } from '../logica/validadores.js';
 import { iniciarCabecera } from '../componentes/cabecera.js';
 import {
@@ -195,9 +199,15 @@ export function iniciarPaginaFicha(
     radio.addEventListener('change', actualizarVisibilidadCampoVip);
   });
 
+  const esAdmin = usuarioActual.rol === 'administrador';
+  let propietarioJornada = usuarioActual.nombre;
+
   // 4. Modo Edición: Cargar datos existentes si viene id
   if (idEdicion) {
-    const jornadaExistente = obtenerJornadaPorId(usuarioActual.nombre, idEdicion, almacenJornadas);
+    let jornadaExistente = obtenerJornadaPorId(usuarioActual.nombre, idEdicion, almacenJornadas);
+    if (!jornadaExistente && esAdmin) {
+      jornadaExistente = obtenerJornadaGlobalPorId(idEdicion, almacenJornadas);
+    }
 
     if (!jornadaExistente) {
       // Requisito 17: Con un id que no existe, vuelve al listado con aviso de error
@@ -208,6 +218,22 @@ export function iniciarPaginaFicha(
       );
       navegar('listado.html');
       return;
+    }
+
+    propietarioJornada = jornadaExistente.propietario || usuarioActual.nombre;
+
+    const campoPropietario = formulario.querySelector('#jornada-propietario');
+    if (campoPropietario) {
+      campoPropietario.value = propietarioJornada;
+    }
+
+    // Aviso al administrador cuando edita el festival de otro promotor
+    if (esAdmin && propietarioJornada.toLowerCase() !== usuarioActual.nombre.toLowerCase()) {
+      lanzarAviso(
+        formulario,
+        `Modo Administrador: Editando jornada del promotor @${propietarioJornada}`,
+        'warning',
+      );
     }
 
     // Rellenar formulario con los datos recuperados
@@ -384,6 +410,10 @@ export function iniciarPaginaFicha(
       .map((p) => String(p).trim())
       .filter((p) => p.length > 0);
 
+    const campoPropietario = formulario.querySelector('#jornada-propietario');
+    const propietarioFinal =
+      (campoPropietario && campoPropietario.value) || propietarioJornada || usuarioActual.nombre;
+
     const jornadaData = {
       nombreJornada: String(formData.get('nombreJornada') || '').trim(),
       fechaEvento: String(formData.get('fechaEvento') || ''),
@@ -399,6 +429,7 @@ export function iniciarPaginaFicha(
         .trim()
         .toUpperCase(),
       patrocinadores,
+      propietario: propietarioFinal,
     };
 
     const idGuardado = campoId ? campoId.value : null;
@@ -406,7 +437,7 @@ export function iniciarPaginaFicha(
       jornadaData.id = idGuardado;
     }
 
-    guardarJornada(usuarioActual.nombre, jornadaData, almacenJornadas);
+    guardarJornada(propietarioFinal, jornadaData, almacenJornadas);
 
     const mensajeExito = idGuardado
       ? 'Jornada modificada con éxito en el cartel'

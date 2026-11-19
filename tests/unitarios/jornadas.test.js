@@ -3,7 +3,9 @@ import { AlmacenFalso } from '../AlmacenFalso.js';
 import {
   obtenerClaveJornadas,
   obtenerJornadas,
+  obtenerTodasLasJornadas,
   obtenerJornadaPorId,
+  obtenerJornadaGlobalPorId,
   guardarJornada,
   eliminarJornada,
 } from '../../js/datos/jornadas.js';
@@ -115,6 +117,81 @@ describe('Módulo de datos de Jornadas (jornadas.js)', () => {
     // Inyectar tipo no array (ej. string o número)
     almacen.setItem(clave, JSON.stringify({ esto: 'no es un array' }));
     expect(obtenerJornadas(usuarioPrueba, almacen)).toEqual([]);
+  });
+
+  it('control total de administrador: obtenerTodasLasJornadas reúne las jornadas de todos los promotores', async () => {
+    const resumir = async (c) => `hash_${c}`;
+    await registrarUsuario(
+      { nombre: 'promotor1', correo: 'p1@fest.com', clave: 'ClaveSegura1' },
+      almacen,
+      resumir,
+    );
+    await registrarUsuario(
+      { nombre: 'promotor2', correo: 'p2@fest.com', clave: 'ClaveSegura1' },
+      almacen,
+      resumir,
+    );
+
+    const j1 = guardarJornada('promotor1', { nombreJornada: 'Metal Fest' }, almacen);
+    const j2 = guardarJornada('promotor2', { nombreJornada: 'Indie Fest' }, almacen);
+
+    const todas = obtenerTodasLasJornadas(almacen);
+    expect(todas).toHaveLength(2);
+    expect(todas.some((j) => j.id === j1.id && j.propietario === 'promotor1')).toBe(true);
+    expect(todas.some((j) => j.id === j2.id && j.propietario === 'promotor2')).toBe(true);
+  });
+
+  it('obtenerJornadaGlobalPorId encuentra una jornada independientemente del usuario creador', async () => {
+    const resumir = async (c) => `hash_${c}`;
+    await registrarUsuario(
+      { nombre: 'promotor_a', correo: 'pa@fest.com', clave: 'ClaveSegura1' },
+      almacen,
+      resumir,
+    );
+    const jCreada = guardarJornada('promotor_a', { nombreJornada: 'Rock Revival' }, almacen);
+
+    const encontrada = obtenerJornadaGlobalPorId(jCreada.id, almacen);
+    expect(encontrada).not.toBeNull();
+    expect(encontrada.id).toBe(jCreada.id);
+    expect(encontrada.propietario).toBe('promotor_a');
+    expect(obtenerJornadaGlobalPorId('id_inexistente', almacen)).toBeNull();
+  });
+
+  it('un administrador puede editar y eliminar jornadas de otros promotores', async () => {
+    const resumir = async (c) => `hash_${c}`;
+    await registrarUsuario(
+      { nombre: 'creador_original', correo: 'co@fest.com', clave: 'ClaveSegura1' },
+      almacen,
+      resumir,
+    );
+    const jInicial = guardarJornada(
+      'creador_original',
+      { nombreJornada: 'Jornada Original', aforoMaximo: 1000 },
+      almacen,
+    );
+
+    // Edición por admin manteniendo propietario
+    const jEditada = guardarJornada(
+      'admin',
+      {
+        id: jInicial.id,
+        nombreJornada: 'Jornada Modificada por Admin',
+        propietario: 'creador_original',
+        aforoMaximo: 2000,
+      },
+      almacen,
+    );
+    expect(jEditada.nombreJornada).toBe('Jornada Modificada por Admin');
+    expect(jEditada.aforoMaximo).toBe(2000);
+
+    const recuperada = obtenerJornadaGlobalPorId(jInicial.id, almacen);
+    expect(recuperada.nombreJornada).toBe('Jornada Modificada por Admin');
+    expect(recuperada.propietario).toBe('creador_original');
+
+    // Eliminación global por admin
+    const eliminada = eliminarJornada('admin', jInicial.id, almacen);
+    expect(eliminada).toBe(true);
+    expect(obtenerJornadaGlobalPorId(jInicial.id, almacen)).toBeNull();
   });
 
   it('cambiarRolUsuario modifica el rol de un usuario existente', async () => {

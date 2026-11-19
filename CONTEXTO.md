@@ -119,6 +119,36 @@ Este documento actúa como la **memoria técnica y el contexto global** del proy
 
 ---
 
+### Sesión 5: 19/11/2026 (`e683a499-3fee-4bec-b8eb-40598876fb5a` · Sesión Actual)
+- **Turno 1:** El usuario solicitó fusionar el Sprint 2 (*"mergeame el sprint 2"*). Se consolidaron los cambios del worktree en la rama `sprint-2`, verificando linters, 138 tests unitarios/integración y 2 tests E2E.
+- **Turno 2:** El usuario solicitó tramitar la Pull Request y fusionarla formalmente (*"hazme la PR y mergealo"*).
+  - Se abrió la **Pull Request #4** hacia `main`.
+  - El workflow de Integración Continua (Calidad, Tests con cobertura y E2E Playwright) se ejecutó en GitHub Actions y pasó al 100% en verde.
+  - Se fusionó la PR con *merge commit* ([`2ebc32b`](https://github.com/fpftoro-docencia/dwec-2dawt-2627-proyectodomeval-jandro-21/commit/2ebc32b170a3c55dc1326a90746c8b71d6a2526e)).
+  - Se vinculó la PR #4 en la tabla de ramas de `README.md` y se etiquetó la versión oficial **`v0.2`**.
+- **Turno 3:** El usuario confirmó el estado de `main` (*"esta ya en la rama main no?"*). Se verificó que `main` estaba 100% al día en local y remoto.
+- **Turno 4:** El usuario solicitó explícitamente: *"vamos a hacer un par de cambios, vamos a hacer que el admin pueda ver TODOS los festivales que hayan hecho los diferentes usuarios, que el admin tenga un control total de qué se está haciendo"*.
+  - **Desarrollo técnico y decisiones tomadas:**
+    1. *Visión unificada y multi-promotor (`js/datos/jornadas.js`):* Implementación de `obtenerTodasLasJornadas(almacen)` agregando el campo `propietario` a cada registro y resiliencia ante usuarios registrados y claves preexistentes.
+    2. *Búsqueda global (`obtenerJornadaGlobalPorId`):* Capacidad para localizar cualquier festival por ID en todo el sistema.
+    3. *Edición y borrado con privilegios de administrador:* `guardarJornada` y `eliminarJornada` permiten al administrador modificar o borrar festivales creados por otros promotores, preservando la titularidad original en el almacenamiento del usuario.
+    4. *Interfaz de usuario de catálogo (`listado.html` y `listado.js`):*
+       - Adaptación dinámica de textos si el usuario activo es administrador (*"Panel Global de Administrador · Control total de jornadas de todos los promotores"*).
+       - Badge identificativo del promotor creador en cada tarjeta (`Promotor: @nombre`).
+       - Búsqueda en tiempo real con debounce que permite filtrar tanto por nombre, género, licencia o CIF como por el nombre del promotor.
+    5. *Formulario de edición (`ficha.html` y `ficha.js`):*
+       - Campo oculto `#jornada-propietario` para preservar la propiedad original del festival.
+       - Banner informativo de aviso cuando el administrador edita un festival perteneciente a otro usuario.
+    6. *Zona de gestión de promotores (`usuarios.html` y `usuarios.js`):*
+       - Badge contador de jornadas por cada promotor (`X jornadas`), otorgando visión global inmediata de actividad.
+    7. *Batería de pruebas:*
+       - 143 tests superados al 100% en Vitest (11 en jornadas, 7 en ficha, 6 en listado, etc.).
+       - 96.47% de cobertura de líneas en lógica pura.
+       - 2/2 tests E2E en Playwright superados.
+       - Linters (ESLint y Prettier) 100% limpios.
+
+---
+
 ## 3. Matriz de Atribución (Petición del Usuario vs Decisión Técnica de la IA)
 
 | Elemento / Característica | Decidido por | Detalle y Justificación |
@@ -148,6 +178,7 @@ Este documento actúa como la **memoria técnica y el contexto global** del proy
 | **Protección contra auto-degradación de admin** | **IA** | Solución al requisito 18 bloqueando que el administrador activo se revoque su propio rol. |
 | **Tests E2E completos con Playwright** | **IA** | Solución al requisito 21 cubriendo ciclos de sesión y CRUD completos sobre Chromium. |
 | **Sustitución de tipos TypeScript en JSDoc** | **IA** | Solución al requisito 23 para compatibilidad estricta con el parser nativo de JSDoc 4. |
+| **Control total y visión global de festivales para administrador** | **Usuario** | Petición explícita: permitir al administrador ver, buscar, editar y borrar todos los festivales creados por cualquier promotor. |
 
 ---
 

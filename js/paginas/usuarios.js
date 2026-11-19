@@ -8,6 +8,7 @@
  */
 import { haySesion, esAdministrador, obtenerUsuarioActual } from '../datos/sesion.js';
 import { obtenerUsuarios, cambiarRolUsuario } from '../datos/usuarios.js';
+import { obtenerJornadas } from '../datos/jornadas.js';
 import { paginar } from '../logica/paginar.js';
 import { renderizarPaginacion } from '../componentes/paginacion.js';
 import { iniciarCabecera } from '../componentes/cabecera.js';
@@ -177,6 +178,12 @@ export function iniciarPaginaUsuarios(
       if (elBadge) {
         elBadge.textContent = usuario.rol.toUpperCase();
         elBadge.className = `badge ${usuario.rol === 'administrador' ? 'badge-admin' : 'badge-usuario'} usuario-badge-rol`;
+      }
+
+      const elNumJornadas = clon.querySelector('.usuario-num-jornadas');
+      if (elNumJornadas) {
+        const totalJornadas = obtenerJornadas(usuario.nombre, almacenUsuarios).length;
+        elNumJornadas.textContent = `${totalJornadas} ${totalJornadas === 1 ? 'jornada' : 'jornadas'}`;
       }
 
       const btnRol = clon.querySelector('.btn-cambiar-rol');

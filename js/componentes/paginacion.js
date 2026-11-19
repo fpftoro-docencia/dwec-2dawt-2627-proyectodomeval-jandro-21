@@ -8,16 +8,37 @@
 /**
  * Renderiza los controles de paginación en el contenedor indicado.
  * Requisito 16: Controles creados desde código con estado accesible y delegación.
+ * Acepta tanto un objeto de opciones `{ paginaActual, totalPaginas, alCambiarPagina }`
+ * como argumentos posicionales `(contenedor, paginaActual, totalPaginas, alCambiarPagina)`.
  *
  * @param {HTMLElement} contenedor Elemento del DOM donde se insertará el bloque de paginación.
- * @param {object} opciones
- * @param {number} opciones.paginaActual
- * @param {number} opciones.totalPaginas
- * @param {Function} opciones.alCambiarPagina
+ * @param {object|number} opcionesOActual Opciones o número de página actual.
+ * @param {number} [totalPaginasPosicional] Total de páginas si se llama posicionalmente.
+ * @param {Function} [alCambiarPaginaPosicional] Callback si se llama posicionalmente.
  */
-export function renderizarPaginacion(contenedor, { paginaActual, totalPaginas, alCambiarPagina }) {
+export function renderizarPaginacion(
+  contenedor,
+  opcionesOActual,
+  totalPaginasPosicional,
+  alCambiarPaginaPosicional,
+) {
   if (!contenedor) {
     return;
+  }
+
+  let paginaActual;
+  let totalPaginas;
+  let alCambiarPagina;
+
+  if (typeof opcionesOActual === 'object' && opcionesOActual !== null) {
+    paginaActual = opcionesOActual.paginaActual || 1;
+    totalPaginas = opcionesOActual.totalPaginas || 1;
+    alCambiarPagina = opcionesOActual.alCambiarPagina || (() => {});
+  } else {
+    paginaActual = Number(opcionesOActual) || 1;
+    totalPaginas = Number(totalPaginasPosicional) || 1;
+    alCambiarPagina =
+      typeof alCambiarPaginaPosicional === 'function' ? alCambiarPaginaPosicional : () => {};
   }
 
   contenedor.innerHTML = '';

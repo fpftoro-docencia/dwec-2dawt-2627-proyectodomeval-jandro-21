@@ -4,6 +4,7 @@ import { AlmacenFalso } from '../AlmacenFalso.js';
 import { iniciarPaginaFicha } from '../../js/paginas/ficha.js';
 import { iniciarSesion } from '../../js/datos/sesion.js';
 import { obtenerJornadas, guardarJornada } from '../../js/datos/jornadas.js';
+import { registrarUsuario } from '../../js/datos/usuarios.js';
 
 describe('Pruebas de Integración: Ficha de Jornada (ficha.html)', () => {
   let almacenSesion;
@@ -230,5 +231,57 @@ describe('Pruebas de Integración: Ficha de Jornada (ficha.html)', () => {
     expect(actualizadas[0].id).toBe(jornadaPrevia.id);
     expect(actualizadas[0].nombreJornada).toBe('Jornada Inicial Modificada');
     expect(actualizadas[0].aforoMaximo).toBe(15000);
+  });
+
+  it('control total: un administrador puede editar una jornada creada por otro promotor', async () => {
+    const sesionAdmin = new AlmacenFalso();
+    iniciarSesion({ nombre: 'superadmin', rol: 'administrador' }, sesionAdmin);
+
+    const resumir = async (c) => `hash_${c}`;
+    await registrarUsuario(
+      { nombre: 'promotor_externo', correo: 'pe@fest.com', clave: 'ClaveSegura1' },
+      almacenJornadas,
+      resumir,
+    );
+
+    const jornadaDeOtro = guardarJornada(
+      'promotor_externo',
+      {
+        nombreJornada: 'Festival del Promotor Externo',
+        fechaEvento: '2027-08-10',
+        generoMusical: 'electronic',
+        aforoMaximo: 8000,
+        tipoAcceso: 'general',
+        suplementoVip: null,
+        codigoLicencia: 'FEST-2027-ELEC',
+        telefonoContacto: '622334455',
+        cifPromotora: 'B12345674',
+        patrocinadores: [],
+      },
+      almacenJornadas,
+    );
+
+    // El admin abre la ficha de la jornada del otro promotor
+    iniciarPaginaFicha(document, {
+      almacenSesion: sesionAdmin,
+      almacenJornadas,
+      navegar,
+      idJornada: jornadaDeOtro.id,
+    });
+
+    const campoNombre = document.querySelector('#campo-nombre-jornada');
+    expect(campoNombre.value).toBe('Festival del Promotor Externo');
+
+    // Cambiar nombre y enviar
+    campoNombre.value = 'Festival Externo Editado por Admin';
+    const form = document.querySelector('#form-jornada');
+    form.dispatchEvent(new Event('submit', { cancelable: true }));
+
+    expect(navegar).toHaveBeenCalledWith('listado.html');
+
+    // Comprobar que se guardó en el almacenamiento del promotor original con el cambio
+    const jornadasOriginal = obtenerJornadas('promotor_externo', almacenJornadas);
+    expect(jornadasOriginal).toHaveLength(1);
+    expect(jornadasOriginal[0].nombreJornada).toBe('Festival Externo Editado por Admin');
   });
 });

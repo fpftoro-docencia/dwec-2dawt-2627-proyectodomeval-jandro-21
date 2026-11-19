@@ -4,6 +4,7 @@ import { AlmacenFalso } from '../AlmacenFalso.js';
 import { iniciarPaginaListado } from '../../js/paginas/listado.js';
 import { iniciarSesion } from '../../js/datos/sesion.js';
 import { guardarJornada, obtenerJornadas } from '../../js/datos/jornadas.js';
+import { registrarUsuario } from '../../js/datos/usuarios.js';
 
 describe('Pruebas de Integración: Listado y Catálogo (listado.html)', () => {
   let almacenSesion;
@@ -185,5 +186,63 @@ describe('Pruebas de Integración: Listado y Catálogo (listado.html)', () => {
     expect(obtenerJornadas(usuarioActivo.nombre, almacenJornadas)).toHaveLength(0);
     expect(contenedor.hidden).toBe(true);
     expect(document.querySelector('#mensaje-vacio').hidden).toBe(false);
+  });
+
+  it('control total: un usuario administrador visualiza y busca jornadas de todos los promotores', async () => {
+    const sesionAdmin = new AlmacenFalso();
+    iniciarSesion({ nombre: 'superadmin', rol: 'administrador' }, sesionAdmin);
+
+    const resumir = async (c) => `hash_${c}`;
+    await registrarUsuario(
+      { nombre: 'superadmin', correo: 'sa@fest.com', clave: 'ClaveSegura1' },
+      almacenJornadas,
+      resumir,
+    );
+    await registrarUsuario(
+      { nombre: 'promotor_indie', correo: 'pi@fest.com', clave: 'ClaveSegura1' },
+      almacenJornadas,
+      resumir,
+    );
+    await registrarUsuario(
+      { nombre: 'promotor_metal', correo: 'pm@fest.com', clave: 'ClaveSegura1' },
+      almacenJornadas,
+      resumir,
+    );
+
+    guardarJornada(
+      'promotor_indie',
+      { nombreJornada: 'Primavera Indie', aforoMaximo: 5000 },
+      almacenJornadas,
+    );
+    guardarJornada(
+      'promotor_metal',
+      { nombreJornada: 'Hellfest Metal', aforoMaximo: 15000 },
+      almacenJornadas,
+    );
+
+    iniciarPaginaListado(document, { almacenSesion: sesionAdmin, almacenJornadas, navegar });
+
+    const contenedor = document.querySelector('#contenedor-jornadas');
+    const contador = document.querySelector('#contador-resultados');
+    const tarjetas = contenedor.querySelectorAll('.item-jornada');
+
+    expect(tarjetas).toHaveLength(2);
+    expect(contador.textContent).toContain('2 jornadas');
+
+    // Comprobar que se muestra la insignia del promotor
+    const promotores = Array.from(contenedor.querySelectorAll('.badge-promotor')).map(
+      (el) => el.textContent,
+    );
+    expect(promotores.some((t) => t.includes('promotor_indie'))).toBe(true);
+    expect(promotores.some((t) => t.includes('promotor_metal'))).toBe(true);
+
+    // Búsqueda por nombre de promotor con debounce
+    vi.useFakeTimers();
+    escribir(document.querySelector('#input-buscador'), 'promotor_indie');
+    vi.advanceTimersByTime(300);
+
+    const filtradas = contenedor.querySelectorAll('.item-jornada');
+    expect(filtradas).toHaveLength(1);
+    expect(filtradas[0].querySelector('.jornada-nombre').textContent).toBe('Primavera Indie');
   });
 });
