@@ -527,7 +527,7 @@ El archivo `.gitignore` excluye:
 | Rama | Funcionalidad | *Pull request* |
 |------|---------------|----------------|
 | `sprint-1-auth` | Usuarios, sesión, roles, avisos, páginas base y CI paso 1 | #2 |
-| `sprint-2` | CRUD de festivales, paginación, filtros debounce, modal dialog, panel admin, E2E y cobertura | |
+| `sprint-2` | CRUD de festivales, paginación, filtros debounce, modal dialog, panel admin, E2E y cobertura | #4 |
 | `despliegue-vercel` | Configuración de despliegue en Vercel (`vercel.json`) y verificación de vista previa | |
 
 **Versión de entrega:** `v1.0`
