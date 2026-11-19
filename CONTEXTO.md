@@ -73,7 +73,49 @@ Este documento actúa como la **memoria técnica y el contexto global** del proy
   2. *Garantizar que estrictamente solo el PRIMER usuario sea Administrador:* Verificación de la condición en `usuarios.js` (`usuarios.length === 0 ? 'administrador' : 'usuario'`) y mejora del mensaje de aviso en `registro.js` para diferenciar con claridad al Administrador Principal del Promotor Estándar.
   3. *Icono SVG de un ojo para ver/ocultar contraseña:* Botón accesible `.btn-ver-clave` con SVGs interactivos de ojo abierto y ojo tachado en `registro.html` e `index.html`, con estilos neo-brutalistas en `css/estilos.css` y conmutación reactiva de `type="password"` a `type="text"`.
   - Validación completa: 68 tests de Vitest pasados al 100% y linters (`npm run lint` y `npm run format:check`) limpios.
-- **Turno 9 (Actual):** Reescritura integral de `CONTEXTO.md` como documento maestro de contexto global del proyecto a petición del usuario.
+- **Turno 9:** Reescritura integral de `CONTEXTO.md` como documento maestro de contexto global del proyecto a petición del usuario.
+
+---
+
+### Sesión 4: 17/11/2026 (`3d869682-30e7-4396-a211-9d9cdf829e24`) · Sprint 2 Completo
+- **Petición del usuario:** *"Lee el proyecto, lee la documentacion y empieza a hacer el sprint 2, ve haciéndolo paso a paso y veme diciendo que decisiones estás tomando"*. Posteriormente confirmó continuar por donde estábamos: *"no hombre, sigue por donde estabas"*.
+- **Desarrollo técnico y decisiones tomadas en el Sprint 2:**
+  1. *Lógica pura de paginación (`js/logica/paginar.js`):* Implementación de `paginar(lista, pagina, porPagina)` con autocorrección defensiva de límites fuera de rango y división exacta de páginas. 6 tests unitarios verificados.
+  2. *Validación pura de la entidad Jornada (`js/logica/validadores.js`):* Implementación de los algoritmos de control oficiales para DNI/NIE (módulo 23 sobre TRWAGMYFPDXBNJZSQVHLCKE) y CIF (suma ponderada de dígitos pares e impares y caracteres de control A-J), expresiones regulares para códigos de licencia (`FEST-AAAA-XXXX`), móviles españoles (`^[67]\d{8}$`), campos de texto y número, y diccionario `validadores` para enlace declarativo con `data-validar`. 71 tests unitarios con tablas `it.each`.
+  3. *Umbral de cobertura estricto (Vitest v8):* Configuración del umbral mínimo del 90% en líneas para la lógica pura (`js/logica/`) en `vitest.config.js`. Se alcanza un **96.47% de cobertura de líneas** (100% en `paginar.js` y 96.22% en `validadores.js`).
+  4. *Capa de almacenamiento de festivales (`js/datos/jornadas.js`):* CRUD completo de jornadas en clave aislada por usuario (`jornadas_${nombreUsuario}`), lectura resiliente ante JSON dañado con `leer()`, identificadores únicos con timestamp y marcas temporales (`creadoEn`, `actualizadoEn`). 8 tests unitarios con `AlmacenFalso`.
+  5. *Gestión de roles (`js/datos/usuarios.js`):* Incorporación de `cambiarRolUsuario(idUsuario, nuevoRol, almacen)` para alternar roles entre `'administrador'` y `'usuario'`.
+  6. *Formulario de ficha (`ficha.html` y `ficha.js`):*
+     - Extracción de datos limpia con `new FormData()`.
+     - Grupo dinámico de patrocinadores (0 a 3) clonando `<template id="plantilla-fila-patrocinador">`, con renumeración correlativa de índices y deshabilitación reactiva del botón al alcanzar el límite de 3.
+     - Campo condicional `suplementoVip` dependiente de radio button `tipoAcceso === 'vip'`, con validación y obligatoriedad activa solo cuando está visible.
+     - Flujo dual: creación y edición mediante parámetro `?id=...` en la URL.
+     - Validación en captura (`blur` en formulario) y feedback reactivo en `input` para corregir campos inválidos.
+     - 7 tests de integración en `tests/integracion/ficha.test.js`.
+  7. *Catálogo de jornadas (`listado.html` y `listado.js`):*
+     - Renderizado de tarjetas con `<template id="plantilla-tarjeta-jornada">`, inyectando datos exclusivamente con `textContent` y atributos (inmunidad XSS).
+     - Componente reutilizable de paginación (`js/componentes/paginacion.js`) con controles accesibles y delegación de eventos.
+     - Buscador en tiempo real con patrón *debounce* de 300 ms, insensible a mayúsculas y acentos.
+     - Diálogo modal nativo `<dialog id="modal-confirmacion-borrado">` para confirmar borrado con `.showModal()`.
+     - Sincronización de página actual en URL (`?pagina=X`) mediante `history.replaceState`.
+     - 6 tests de integración en `tests/integracion/listado.test.js` con temporizadores falsos (`vi.useFakeTimers()`).
+  8. *Panel de administración (`usuarios.html` y `usuarios.js`):*
+     - Acceso restringido exclusivamente a administradores (expulsa a no administradores con aviso flash).
+     - Listado de usuarios con buscador con debounce y paginación propia.
+     - Botón para alternar rol con protección contra auto-degradación (un administrador no puede revocar su propio rol).
+     - 6 tests de integración en `tests/integracion/usuarios.test.js`.
+  9. *Pruebas de extremo a extremo (E2E) con Playwright:*
+     - Configuración de `playwright.config.js` y utilidades auxiliares en `e2e/helpers.js`.
+     - `e2e/sesion.spec.js`: ciclo completo de registro como primer usuario (admin), verificación de acceso a menú usuarios, logout y re-login.
+     - `e2e/crud.spec.js`: ciclo CRUD completo de festival (alta, edición, confirmación en `<dialog>`, borrado y persistencia tras recarga).
+     - Ambos tests E2E pasan 100% en verde en Chromium.
+  10. *Flujo de CI (`.github/workflows/ci.yml`):*
+      - Trabajos secuenciales `Calidad` -> `Tests` (con subida de artefacto de cobertura) -> `E2E` (Chromium con subida de reporte en fallo).
+      - Concurrencia configurada (`concurrency: { group: ..., cancel-in-progress: true }`).
+  11. *Corrección y compilación de JSDoc:*
+      - Corrección de anotaciones TypeScript no estándar por tipos JSDoc nativos (`{Storage|object}` y `{Function}`).
+      - `npm run docs` compila con éxito (código de salida 0) generando la documentación técnica en `docs/`.
+  12. *Documentación completa:* Actualización exhaustiva de `README.md` (diagrama Mermaid, arquitectura, seguridad de sesión, funcionalidades, eventos y cobertura) y `blog/README.md`.
 
 ---
 
@@ -95,7 +137,17 @@ Este documento actúa como la **memoria técnica y el contexto global** del proy
 | **Semáforo anti-doble envío en submits** | **IA** | Solución al requisito 6 y 19: bloquear botones durante el cálculo asíncrono del hash SHA-256. |
 | **Función `leer()` tolerante a JSON dañado** | **IA** | Solución al requisito 3: envolver en `try/catch` para devolver valor por defecto ante fallos. |
 | **Conmutador de Tema Claro/Oscuro (`tema.js`)** | **IA** | Añadido como mejora técnica complementaria con test unitario (`tema.test.js`). |
-| **Generación de IDs con timestamp y aleatoriedad** | **IA** | Implementado en `usuarios.js` (`usr_${Date.now()}_...`) para evitar colisiones sin librerías. |
+| **Generación de IDs con timestamp y aleatoriedad** | **IA** | Implementado en `usuarios.js` y `jornadas.js` para evitar colisiones sin librerías externas. |
+| **Algoritmo CIF/DNI (Módulo 23 y control ponderado)** | **IA** | Solución al requisito 14 para validar identificadores fiscales españoles con exactitud matemática. |
+| **Paginación pura desacoplada (`paginar.js`)** | **IA** | Solución al requisito 13 con autocorrección de rangos y tests unitarios al 100%. |
+| **Renderizado seguro con `<template>` y `textContent`** | **IA** | Solución a los requisitos 17 y 18 eliminando cualquier riesgo de XSS en datos de usuario. |
+| **Buscador con debounce (300 ms)** | **IA** | Solución al requisito 17 para optimizar el filtrado de festivales y usuarios sin degradar la UI. |
+| **Confirmación de borrado en `<dialog>`** | **IA** | Solución al requisito 17 utilizando el elemento modal nativo de HTML5 con `.showModal()`. |
+| **Grupo dinámico con renumeración correlativa** | **IA** | Solución al requisito 15 con clonación de `<template>` y límite accesible de 3 patrocinadores. |
+| **Campo condicional `suplementoVip`** | **IA** | Solución al requisito 15 activando obligatoriedad y visibilidad reactiva según el radio seleccionado. |
+| **Protección contra auto-degradación de admin** | **IA** | Solución al requisito 18 bloqueando que el administrador activo se revoque su propio rol. |
+| **Tests E2E completos con Playwright** | **IA** | Solución al requisito 21 cubriendo ciclos de sesión y CRUD completos sobre Chromium. |
+| **Sustitución de tipos TypeScript en JSDoc** | **IA** | Solución al requisito 23 para compatibilidad estricta con el parser nativo de JSDoc 4. |
 
 ---
 
@@ -527,8 +579,8 @@ it('listado.html redirige a index.html si no hay sesión activa', () => {
 
 ```mermaid
 flowchart TD
-    S1["Sprint 1 (v0.1)<br/>Autenticación, Roles, Avisos, CI Paso 1<br/>ESTADO: 100% COMPLETADO"] --> S2["Sprint 2 (v0.2)<br/>CRUD Festivales, Drag & Drop, Buscador, Paginación, Panel Admin, E2E, Cobertura ≥90%<br/>ESTADO: PENDIENTE DE INICIO"]
-    S2 --> S3["Sprint 3 (v1.0)<br/>Despliegue Vercel, Vistas Previas, Prueba de Humo, GitHub Release<br/>ESTADO: PLANIFICADO"]
+    S1["Sprint 1 (v0.1)<br/>Autenticación, Roles, Avisos, CI Paso 1<br/>ESTADO: 100% COMPLETADO"] --> S2["Sprint 2 (v0.2)<br/>CRUD Festivales, Buscador, Paginación, Panel Admin, E2E, Cobertura ≥90%<br/>ESTADO: 100% COMPLETADO"]
+    S2 --> S3["Sprint 3 (v1.0)<br/>Drag & Drop de Artistas, Despliegue Vercel, Vistas Previas, Prueba de Humo, GitHub Release<br/>ESTADO: PLANIFICADO"]
 ```
 
 ### Sprint 1 (`v0.1`): ✅ Completado e Implementado
@@ -539,15 +591,19 @@ flowchart TD
 - 68 tests automatizados pasando en Vitest (unitarios + integración).
 - Pipeline de GitHub Actions (`Calidad` + `Tests`) configurado en `.github/workflows/ci.yml`.
 
-### Sprint 2 (`v0.2`): ⏳ Próximo a comenzar
-- Tareas en Trello: 1.15 a 1.25.
-- Creación de la rama `sprint-2-crud`.
-- Implementación de `js/datos/jornadas.js` con aislamiento por usuario.
-- Funciones puras de validación de entidad (`codigoLicencia`, `telefonoContacto`, `cifPromotora`) y paginación (`paginar()`).
-- Catálogo interactivo en `listado.html` con `<template>`, buscador con *debounce*, confirmación de borrado en `<dialog>` y sincronización de página en URL (`?pagina=X`).
-- Formulario de `ficha.html` con campo condicional y grupo dinámico.
-- Panel de gestión de promotores en `usuarios.html` con protección anti-autobloqueo.
-- Pruebas E2E con Playwright y umbral de cobertura ≥90% en `vitest.config.js`.
+### Sprint 2 (`v0.2`): ✅ 100% Completado e Implementado
+- Rama de trabajo: `sprint-2`.
+- Capa de datos `js/datos/jornadas.js` con persistencia aislada bajo `jornadas_${nombreUsuario}` y lectura resiliente `leer()`.
+- Lógica pura matemática de paginación (`js/logica/paginar.js`) con 100% de cobertura y tests unitarios.
+- Lógica pura de validación (`js/logica/validadores.js`) con algoritmos de control oficiales DNI/NIE (módulo 23) y CIF (suma ponderada), regexes de licencia y teléfono móvil español, y diccionario de estrategias.
+- Cobertura de lógica pura en Vitest: **96.47% de líneas** (supera el umbral mínimo del 90%).
+- Catálogo interactivo en `listado.html` con `<template>`, buscador con *debounce* (300 ms), modal `<dialog>` accesible para confirmación de borrado y sincronización de página en la URL (`?pagina=X`).
+- Formulario de `ficha.html` con extracción `FormData`, campo condicional `suplementoVip`, grupo dinámico de patrocinadores (0 a 3) con renumeración correlativa, validación en captura (`blur`) y modo edición.
+- Panel de administración en `usuarios.html` con conmutación de roles de usuario y protección contra auto-degradación del administrador activo.
+- Pruebas E2E completas con Playwright (`e2e/sesion.spec.js`, `e2e/crud.spec.js`) pasando al 100% en verde sobre Chromium.
+- Suite completa de pruebas automatizadas: 138 tests en Vitest + 2 tests E2E en Playwright (140 tests en total, 100% en verde).
+- Pipeline de GitHub Actions actualizado con trabajo secuencial `E2E`, artefactos de cobertura y reporte Playwright.
+- Documentación técnica JSDoc generada limpiamente (`npm run docs`) y portadas de arquitectura en `README.md` y `blog/README.md`.
 
 ### Sprint 3 (`v1.0`): ⏳ Planificado
 - Conexión del repositorio a Vercel con Deployment Checks.

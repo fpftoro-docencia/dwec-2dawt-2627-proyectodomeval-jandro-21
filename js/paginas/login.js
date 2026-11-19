@@ -21,7 +21,7 @@ import { iniciarTema } from '../componentes/tema.js';
  * @param {Storage} [opciones.almacenUsuarios=localStorage]
  * @param {Storage} [opciones.almacenSesion=sessionStorage]
  * @param {Function} [opciones.resumir=resumirClave]
- * @param {(url: string) => void} [opciones.navegar=(url) => location.replace(url)]
+ * @param {Function} [opciones.navegar]
  */
 export function iniciarPaginaLogin(
   documento = document,

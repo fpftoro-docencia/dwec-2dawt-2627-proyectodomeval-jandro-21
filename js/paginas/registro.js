@@ -36,7 +36,7 @@ const SVG_CIRCLE = `<svg class="svg-req" viewBox="0 0 20 20" aria-hidden="true">
  * @param {Storage} [opciones.almacenUsuarios=localStorage]
  * @param {Storage} [opciones.almacenSesion=sessionStorage]
  * @param {Function} [opciones.resumir=resumirClave]
- * @param {(url: string) => void} [opciones.navegar=(url) => location.replace(url)]
+ * @param {Function} [opciones.navegar]
  */
 export function iniciarPaginaRegistro(
   documento = document,

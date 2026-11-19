@@ -147,20 +147,87 @@
 
     <main class="container my-3 my-sm-4 my-md-5">
       <div class="mb-4">
+        <span class="badge badge-admin mb-2">Zona de Control</span>
         <h1 class="h2 fw-bold text-uppercase letter-spacing-1 mb-1">
           Zona de Administración de Promotores
         </h1>
         <p class="text-secondary mb-0">
-          Control de acceso, visualización de cuentas y asignación de rangos administrativos
+          Control de acceso, cuentas registradas y asignación de rangos administrativos
         </p>
       </div>
 
-      <div class="card-beatfest p-5 text-center">
+      <!-- Barra de búsqueda con debounce para usuarios -->
+      <div class="card-beatfest p-3 mb-4">
+        <div class="row g-2 align-items-center">
+          <div class="col-12 col-md-8">
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-end-0">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
+              <input
+                type="search"
+                id="input-buscador-usuarios"
+                class="form-control border-start-0"
+                placeholder="Buscar por nombre de usuario o correo electrónico..."
+                aria-label="Buscar usuarios registrados"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-4 text-md-end">
+            <span id="contador-usuarios" class="badge badge-fest-cyan fs-6">
+              0 promotores registrados
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay resultados de búsqueda -->
+      <div id="mensaje-vacio-usuarios" class="card-beatfest p-5 text-center mb-4" hidden>
         <p class="text-secondary mb-0">
-          Panel de administración de roles (se implementará en el Sprint 2).
+          No se han encontrado usuarios o promotores con el criterio de búsqueda indicado.
         </p>
       </div>
+
+      <!-- Contenedor responsivo de promotores (Requisito 18) -->
+      <div id="contenedor-usuarios" class="d-flex flex-column gap-3 mb-4"></div>
+
+      <!-- Paginación común para la zona de administración -->
+      <nav
+        id="nav-paginacion-usuarios"
+        class="d-flex justify-content-center my-4"
+        aria-label="Paginación de promotores"
+      ></nav>
     </main>
+
+    <!-- Template para fila de usuario -->
+    <template id="tpl-fila-usuario">
+      <article class="card-beatfest p-3 p-md-4 fila-usuario">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h2 class="h5 fw-bold mb-0 usuario-nombre"></h2>
+              <span class="badge usuario-badge-rol"></span>
+            </div>
+            <p class="text-secondary small mb-0 usuario-correo"></p>
+          </div>
+          <div>
+            <button type="button" class="btn-edgy-outline btn-sm btn-cambiar-rol"></button>
+          </div>
+        </div>
+      </article>
+    </template>
 
     <footer class="text-center py-4 mt-auto">
       <div class="container">

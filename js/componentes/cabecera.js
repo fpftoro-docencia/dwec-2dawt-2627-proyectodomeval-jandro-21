@@ -15,7 +15,7 @@ import { iniciarTema } from './tema.js';
  * @param {Document} [documento=document]
  * @param {object} [opciones={}]
  * @param {Storage} [opciones.almacenSesion=sessionStorage]
- * @param {(url: string) => void} [opciones.navegar=(url) => location.replace(url)]
+ * @param {Function} [opciones.navegar]
  */
 export function iniciarCabecera(
   documento = document,
