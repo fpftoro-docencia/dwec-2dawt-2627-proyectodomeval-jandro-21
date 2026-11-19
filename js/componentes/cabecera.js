@@ -7,6 +7,7 @@
  */
 import { obtenerSesion, cerrarSesion } from '../datos/sesion.js';
 import { guardarAvisoParaSiguientePagina } from './avisos.js';
+import { iniciarTema } from './tema.js';
 
 /**
  * Inicializa y sincroniza la cabecera con la sesión activa.
@@ -14,12 +15,14 @@ import { guardarAvisoParaSiguientePagina } from './avisos.js';
  * @param {Document} [documento=document]
  * @param {object} [opciones={}]
  * @param {Storage} [opciones.almacenSesion=sessionStorage]
- * @param {(url: string) => void} [opciones.navegar=(url) => location.replace(url)]
+ * @param {Function} [opciones.navegar]
  */
 export function iniciarCabecera(
   documento = document,
   { almacenSesion = sessionStorage, navegar = (url) => location.replace(url) } = {},
 ) {
+  iniciarTema(documento);
+
   const sesion = obtenerSesion(almacenSesion);
   if (!sesion) {
     return;
